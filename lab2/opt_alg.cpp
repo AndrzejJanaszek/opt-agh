@@ -110,8 +110,45 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
+		solution s_left;
+		solution s_right;
+		
+		double c = 0, d = 0;
+		int k = 0;
 
+		// ----------------------------------------------------------------------------
+		// szukanie k -> ciag fibonaciego
+		std::vector<double> fib_n;
+		fib_n.push_back(1);	// k = 0
+		fib_n.push_back(1);	// k = 1
+		for(k = 1; fib_n[k] <= ((b-a)/epsilon); k++){
+			fib_n.push_back(fib_n[k] + fib_n[k-1]);
+		}
+		// ----------------------------------------------------------------------------
+
+		c = b - fib_n[k-1]/fib_n[k] * (b - a);
+		d = a + b - c;
+
+		for(int i = 0; i <= (k-3); i++){
+			s_left.x = c;
+			s_right.x = d;
+			s_left.fit_fun(ff);
+			s_right.fit_fun(ff);
+
+			if(s_left.y < s_right.y){
+				// a = a;
+				b = d;
+			}
+			else{
+				// b = b;
+				a = c;
+			}
+
+			c = b - fib_n[k-i-2]/fib_n[k-i-1] * (b - a);
+			d = a + b - c;
+		}
+
+		Xopt.x = c;
 		return Xopt;
 	}
 	catch (string ex_info)

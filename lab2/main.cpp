@@ -76,12 +76,14 @@ void lab1()
 	double epsilon = 1e-2;									// dok�adno��
 	int Nmax = 10000;
 
-	// todo koniec labow
-	double* m = expansion(ff1T, 0, 0.1, 1.1, 1000);
+	// // todo koniec labow
+	double* m = expansion(ff1T, 99, 0.1, 1.1, 1000);
 
-	std::cout << m[0] << " " << m[1] << "\n";
+	std::cout << "a: " << m[0] << " b: " << m[1] << "\n";
 
-	delete []m;
+	std::cout << "solution.x : " << fib(ff1T, m[0], m[1], epsilon).x << "\n";
+
+	// delete []m;
 
 	// printf();
 }
