@@ -77,7 +77,11 @@ void lab1()
 	int Nmax = 10000;
 
 	// todo koniec labow
-	// matrix m = expansion(ff1T, 0, 0.1, 1.1, 1000, NULL, NULL);
+	double* m = expansion(ff1T, 0, 0.1, 1.1, 1000);
+
+	std::cout << m[0] << " " << m[1] << "\n";
+
+	delete []m;
 
 	// printf();
 }

@@ -42,7 +42,11 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 	try
 	{
 		int i = 0;
-		double* p = new double[2] { 0, 0 };
+		double f_od_x_i[3] = {0};
+		// x_i f(x_i)
+		solution s_i[3];
+
+		double* p = new double[2]{ 0, 0 };
 		//Tu wpisz kod funkcji
 
 		solution X0(x0);
@@ -58,7 +62,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			return p;
 		}
 
-		if(X1.y >= X0.y){
+		if(X1.y > X0.y){
 			d = -d;
 			X1.x = X0.x + d;
 			X1.fit_fun(ff);
@@ -70,30 +74,29 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			}
 		}
 
-		solution X2(0);
-		solution X_3(0);	// X trzecie od końca (i-1)
+		s_i[0] = X0;
+		s_i[1] = X1;
 		do{
 			if(X1.f_calls > Nmax){
 				throw std::runtime_error("NA DUZO WYWOLAN\n");
 			}
 			i++;
-			X_3 = X1;
-			X1 = X2;
 
-			X2.x = X0.y + pow(alpha, i) * d;
-			X2.fit_fun(ff);
-
-		}while(X1.y <= X2.y);
+			// nadpisujemy wartość dla X1 (bez znaczenia czy x1 czy x0 musi byc jakies solution)
+			X1.x = X0.x + pow(alpha, i) * d;
+			X1.fit_fun(ff);
+			s_i[(i+1)%3] = X1;
+		}while(s_i[i%3].y >= s_i[(i+1)%3].y);
 
 		if (d > 0){
-			p[0] = m2d(X_3.x);// i-1
-			p[1] = m2d(X2.x);// i+1
+			p[0] = m2d(s_i[(i-1)%3].x);	// i-1
+			p[1] = m2d(s_i[(i+1)%3].x);	// i+1
 
 			return p;
 		}
 
-		p[0] = m2d(X2.x);// i+1
-		p[1] = m2d(X_3.x);// i-1
+		p[0] = m2d(s_i[(i+1)%3].x);	// i+1
+		p[1] = m2d(s_i[(i-1)%3].x);	// i-1
 		return p;
 	}
 	catch (string ex_info)
