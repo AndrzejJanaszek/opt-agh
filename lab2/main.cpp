@@ -75,13 +75,15 @@ void lab1()
 {
 	double epsilon = 1e-2;									// dok�adno��
 	int Nmax = 10000;
+	const double gamma = 1e-2;
 
 	// // todo koniec labow
-	double* m = expansion(ff1T, 99, 0.1, 1.1, 1000);
+	double* m = expansion(ff1T, 0, 0.1, 1.1, 1000);
 
 	std::cout << "a: " << m[0] << " b: " << m[1] << "\n";
 
-	std::cout << "solution.x : " << fib(ff1T, m[0], m[1], epsilon).x << "\n";
+	std::cout << "FIBONACI - solution.x : " << fib(ff1T, m[0], m[1], epsilon).x << "\n";
+	std::cout << "LAGRANGE - solution.x : " << lag(ff1T, m[0], m[1], epsilon, gamma, Nmax).x << "\n";
 
 	// delete []m;
 

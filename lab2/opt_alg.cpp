@@ -162,10 +162,74 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 {
 	try
 	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
+		int i = 0;
+		double d = 0, l = 0, m = 0;
+		solution Xopt, s_a, s_b, s_c;
 
-		return Xopt;
+		solution s_d_i[2];
+		s_d_i[1].x = b+100*gamma;
+		//Tu wpisz kod funkcji
+		double c = a + ((b-a)/2.0);
+		
+		s_a.x = a;
+		s_b.x = b;
+		s_c.x = c;
+
+		do{
+			i++;
+			s_a.fit_fun(ff);
+			s_b.fit_fun(ff);
+			s_c.fit_fun(ff);
+
+			l = m2d(s_a.y) *( pow(m2d(s_b.x),2) - pow(m2d(s_c.x),2)) + m2d(s_b.y) *( pow(m2d(s_c.x),2) - pow(m2d(s_a.x),2)) + m2d(s_c.y) *( pow(m2d(s_a.x),2) - pow(m2d(s_b.x),2));
+			m = m2d(s_a.y) *( m2d(s_b.x) - m2d(s_c.x)) + m2d(s_b.y) *( m2d(s_c.x) - m2d(s_a.x)) + m2d(s_c.y) *( m2d(s_a.x) - m2d(s_b.x));
+
+			if (m <= 0){
+				throw std::runtime_error("[Error]: m <= 0 in lag function");
+			}
+
+			d = 0.5 * l / m;
+			s_d_i[i%2].x = d;
+			s_d_i[i%2].fit_fun(ff);
+
+			if(s_a.x < s_d_i[i%2].x && s_d_i[i%2].x < s_c.x){
+				if(s_d_i[i%2].y < s_c.y){
+					// a = a;
+					// c = d;
+					s_c.x = s_d_i[i%2].x;
+					// b = c;
+					s_b.x = s_c.x;
+				}
+				else{
+					s_a.x = s_d_i[i%2].x;
+					// c = c
+					// b = b
+				}
+			}
+			else if(s_c.x < s_d_i[i%2].x && s_d_i[i%2].x < s_b.x){
+				// s_d_i[i%2].fit_fun(ff);
+				if(s_d_i[i%2].y < s_c.y){
+					s_a.x = s_c.x;
+					s_c.x = s_d_i[i%2].x;
+					// b = b
+				}
+				else{
+					// a = a
+					// c = c
+					s_b.x = s_d_i[i%2].x;
+				}
+			}
+			else{
+				throw std::runtime_error("[Error]: double if: in lag function");
+			}
+
+			if(s_a.f_calls > Nmax){
+				throw std::runtime_error("[Error]: to many f_calls!");
+			}
+		}while(((s_b.x - s_a.x) < epsilon) || (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) < gamma));
+
+		Xopt.x = s_d_i[i%2].x;
+		return Xopt.x;
 	}
 	catch (string ex_info)
 	{
