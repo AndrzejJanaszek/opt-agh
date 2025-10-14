@@ -85,7 +85,7 @@ void lab1()
 	std::cout << "FIBONACI - solution.x : " << fib(ff1T, m[0], m[1], epsilon).x << "\n";
 	std::cout << "LAGRANGE - solution.x : " << lag(ff1T, m[0], m[1], epsilon, gamma, Nmax).x << "\n";
 
-	// delete []m;
+	delete []m;
 
 	// printf();
 }
