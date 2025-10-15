@@ -89,6 +89,11 @@ void lab1()
 
 	std::cout << "g(x): " << ff1R(matrix(50)) << "\n";
 
+	
+	std::cout << "FIBONACI - solution.x : " << fib(ff1R, 1, 100, epsilon, 50).x << "\n";
+	std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x << "\n";
+
+
 	// printf();
 }
 

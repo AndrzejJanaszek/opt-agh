@@ -41,8 +41,8 @@ matrix ff1T(matrix x, matrix ud1, matrix ud2){
 	return -cos(0.1*x(0)) * exp(-pow(0.1*x(0) - 2*M_PI , 2)) + 0.002*pow(0.1*x(0), 2);
 }
 
-// funkcja zwraca maksymalną temperaturę w trakcie symulacji
-matrix ff1R(matrix x, matrix ud1, matrix ud2){
+// funkcja zwraca maksymalną temperaturę w trakcie symulacji dla podanego przekroju D_a
+matrix gg1R(matrix x, matrix ud1, matrix ud2){
 	// t0 = 0 [s]
 	// t_end = 2000 [s]
 	// dt = 1 [s]
@@ -125,4 +125,8 @@ matrix ff1R(matrix x, matrix ud1, matrix ud2){
 	}
 
 	return matrix(T_max);
+}
+
+matrix ff1R(matrix x, matrix ud1, matrix ud2){
+	return fabs(m2d(gg1R(x, ud1, ud2)) - 50);
 }
