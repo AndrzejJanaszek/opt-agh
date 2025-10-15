@@ -101,11 +101,18 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 	
 	
 	for(int time = time_start; time < time_end; time+=time_step) {
-		dV_a = -a * b * D_a * sqrt(2 * g * V_a / P_a);	// *dt = 1[s] wiec pomijamy
+		// przeliczenie objętości dla zbiornika A
+		if(V_a > 0){
+			dV_a = -a * b * D_a * sqrt(2 * g * V_a / P_a);	// *dt = 1[s] wiec pomijamy
+			V_a = V_a + dV_a * time_step;
+			if(V_a < 0){
+				V_a = 0;
+				dV_a = 0;
+			}
+			printf("V_a: %lf: ", V_a);
+		}
+		// przeliczenie objętości dla zbiornika B
 		dV_b = -a * b * D_b * sqrt(2 * g * V_b / P_b);	// *dt = 1[s] wiec pomijamy
-
-		// nowe objętości
-		V_a = V_a + dV_a * time_step;
 		V_b = V_b + dV_b * time_step;
 
 		// suma wpływających płynów do pojemnika B

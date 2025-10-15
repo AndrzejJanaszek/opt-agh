@@ -86,13 +86,12 @@ void lab1()
 	std::cout << "LAGRANGE - solution.x : " << lag(ff1T, m[0], m[1], epsilon, gamma, Nmax).x << "\n";
 
 	delete []m;
-
-	std::cout << "g(x): " << ff1R(matrix(50)) << "\n";
-
+	
+	std::cout << "g(x): " << gg1R(matrix(50), NULL, NULL) << "\n";
 	
 	std::cout << "FIBONACI - solution.x : " << fib(ff1R, 1, 100, epsilon, 50).x << "\n";
-	std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x << "\n";
-
+	std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 10, 30, epsilon, gamma, Nmax, 50).x << "\n";
+	
 
 	// printf();
 }
