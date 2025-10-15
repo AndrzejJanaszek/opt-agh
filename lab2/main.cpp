@@ -87,6 +87,8 @@ void lab1()
 
 	delete []m;
 
+	std::cout << "g(x): " << ff1R(matrix(50)) << "\n";
+
 	// printf();
 }
 

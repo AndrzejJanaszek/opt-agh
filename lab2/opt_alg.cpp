@@ -52,8 +52,8 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		solution X0(x0);
 		solution X1(x0+d);
 
-		X0.fit_fun(ff);
-		X1.fit_fun(ff);
+		X0.fit_fun(ff, ud1, ud2);
+		X1.fit_fun(ff, ud1, ud2);
 
 		// todo
 		if (X1.y == X0.y){
@@ -65,7 +65,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		if(X1.y > X0.y){
 			d = -d;
 			X1.x = X0.x + d;
-			X1.fit_fun(ff);
+			X1.fit_fun(ff, ud1, ud2);
 
 			if(X1.y >= X0.y){
 				p[0] = m2d(X1.x);
@@ -84,7 +84,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 
 			// nadpisujemy wartość dla X1 (bez znaczenia czy x1 czy x0 musi byc jakies solution)
 			X1.x = X0.x + pow(alpha, i) * d;
-			X1.fit_fun(ff);
+			X1.fit_fun(ff, ud1, ud2);
 			s_i[(i+1)%3] = X1;
 		}while(s_i[i%3].y >= s_i[(i+1)%3].y);
 
@@ -132,8 +132,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		for(int i = 0; i <= (k-3); i++){
 			s_left.x = c;
 			s_right.x = d;
-			s_left.fit_fun(ff);
-			s_right.fit_fun(ff);
+			s_left.fit_fun(ff, ud1, ud2);
+			s_right.fit_fun(ff, ud1, ud2);
 
 			if(s_left.y < s_right.y){
 				// a = a;
@@ -177,9 +177,9 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 		do{
 			i++;
-			s_a.fit_fun(ff);
-			s_b.fit_fun(ff);
-			s_c.fit_fun(ff);
+			s_a.fit_fun(ff, ud1, ud2);
+			s_b.fit_fun(ff, ud1, ud2);
+			s_c.fit_fun(ff, ud1, ud2);
 
 			l = m2d(s_a.y) *( pow(m2d(s_b.x),2) - pow(m2d(s_c.x),2)) + m2d(s_b.y) *( pow(m2d(s_c.x),2) - pow(m2d(s_a.x),2)) + m2d(s_c.y) *( pow(m2d(s_a.x),2) - pow(m2d(s_b.x),2));
 			m = m2d(s_a.y) *( m2d(s_b.x) - m2d(s_c.x)) + m2d(s_b.y) *( m2d(s_c.x) - m2d(s_a.x)) + m2d(s_c.y) *( m2d(s_a.x) - m2d(s_b.x));
@@ -190,7 +190,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 			d = 0.5 * l / m;
 			s_d_i[i%2].x = d;
-			s_d_i[i%2].fit_fun(ff);
+			s_d_i[i%2].fit_fun(ff, ud1, ud2);
 
 			if(s_a.x < s_d_i[i%2].x && s_d_i[i%2].x < s_c.x){
 				if(s_d_i[i%2].y < s_c.y){
@@ -207,7 +207,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				}
 			}
 			else if(s_c.x < s_d_i[i%2].x && s_d_i[i%2].x < s_b.x){
-				// s_d_i[i%2].fit_fun(ff);
+				// s_d_i[i%2].fit_fun(ff, ud1, ud2);
 				if(s_d_i[i%2].y < s_c.y){
 					s_a.x = s_c.x;
 					s_c.x = s_d_i[i%2].x;
