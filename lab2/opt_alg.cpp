@@ -244,9 +244,6 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			}
 
 			// printf("%d,%lf\n", i, m2d((s_b.x)-s_a.x));
-
-			bool dupa_1 = (m2d(s_b.x - s_a.x) < epsilon);
-			bool dupa_2 = (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) < gamma);
 		}while((m2d(s_b.x - s_a.x) > epsilon) && (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) > gamma));
 
 		Xopt.x = s_d_i[i%2].x;

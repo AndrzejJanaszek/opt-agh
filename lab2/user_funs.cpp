@@ -92,13 +92,12 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 	
 	// czas symulacji [double celowo]
 	const double time_start = 0.0;
-	const double time_end = 500.0;
+	const double time_end = 2000.0;
 	const double time_step = 1.0;
 
 	double dV_a, dV_b, dT, V_in, T_in;
 
 	double T_max = -300;
-	
 	
 	for(double time = time_start; time < time_end; time+=time_step) {
 		// przeliczenie objętości dla zbiornika A
@@ -130,6 +129,11 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 		if(T > T_max){
 			T_max = T;
 		}
+
+		
+		if(time > 999)
+			printf("%d,%lf,%lf,%lf\n", static_cast<int>(time), V_a, V_b, T);
+
 	}
 	return matrix(T_max);
 }

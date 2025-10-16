@@ -85,8 +85,8 @@ void lab1()
 	//#######################################
 	//			 FUN TESTOWA
 	//#######################################
-/* 
-	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+
+/* 	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
     std::mt19937 gen(rd());                     // generator Mersenne Twister
     std::uniform_real_distribution<double> dist(-100, 100.0); // równomierny rozkład
 
@@ -134,15 +134,12 @@ void lab1()
 		);
 
 		delete[] m;
-	}
- */
-	
-	std::cout << "FIBONACI - solution.x : " << fib(ff1R, 1, 100, epsilon, 50).x << "\n";
-	std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x << "\n";
+	} */
 
-	for(int i = 1; i < 100; i++ ){
-		printf("%d: %lf\n", i , m2d(ff1R(matrix(i))));
-	}
+	// printf("%lf\n", m2d(fib(ff1R, 1, 100, epsilon, 50).x));
+	// printf("%lf", m2d(lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x));
+
+	gg1R(matrix(20.032924));
 
 }
 
