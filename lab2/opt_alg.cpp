@@ -136,6 +136,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 		c = b - fib_n[k-1]/fib_n[k] * (b - a);
 		d = a + b - c;
+		// printf("%d,%lf\n", 0, (b-a));
+
 
 		for(int i = 0; i <= (k-3); i++){
 			s_left.x = c;
@@ -154,6 +156,8 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 			c = b - fib_n[k-i-2]/fib_n[k-i-1] * (b - a);
 			d = a + b - c;
+
+			// printf("%d,%lf\n", i+1, (b-a));
 		}
 		s_left.fit_fun(ff, ud1, ud2);
 		Xopt.x = s_left.x;
@@ -177,7 +181,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		solution Xopt, s_a, s_b, s_c;
 
 		solution s_d_i[2];
-		s_d_i[1].x = b+100*gamma;
+		s_d_i[0].x = 2000;
 		//Tu wpisz kod funkcji
 		double c = a + ((b-a)/2.0);
 		
@@ -185,6 +189,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		s_b.x = b;
 		s_c.x = c;
 
+		// printf("%d,%lf\n", i, (b-a));
 		do{
 			i++;
 			s_a.fit_fun(ff, ud1, ud2);
@@ -206,9 +211,10 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 				if(s_d_i[i%2].y < s_c.y){
 					// a = a;
 					// c = d;
+					matrix tmp = s_c.x;
 					s_c.x = s_d_i[i%2].x;
 					// b = c;
-					s_b.x = s_c.x;
+					s_b.x = tmp;
 				}
 				else{
 					s_a.x = s_d_i[i%2].x;
@@ -236,7 +242,12 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 			if(s_a.f_calls > Nmax){
 				throw std::runtime_error("[Error]: to many f_calls!");
 			}
-		}while(((s_b.x - s_a.x) < epsilon) || (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) < gamma));
+
+			// printf("%d,%lf\n", i, m2d((s_b.x)-s_a.x));
+
+			bool dupa_1 = (m2d(s_b.x - s_a.x) < epsilon);
+			bool dupa_2 = (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) < gamma);
+		}while((m2d(s_b.x - s_a.x) > epsilon) && (fabs( m2d(s_d_i[i%2].x) - m2d(s_d_i[(i-1)%2].x)) > gamma));
 
 		Xopt.x = s_d_i[i%2].x;
 		Xopt.y = s_d_i[i%2].y;

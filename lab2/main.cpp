@@ -85,7 +85,7 @@ void lab1()
 	//#######################################
 	//			 FUN TESTOWA
 	//#######################################
-
+/* 
 	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
     std::mt19937 gen(rd());                     // generator Mersenne Twister
     std::uniform_real_distribution<double> dist(-100, 100.0); // równomierny rozkład
@@ -100,7 +100,7 @@ void lab1()
 		s_lag.clear_calls();
 
 		x0 = dist(gen);
-		m = expansion(ff1T, x0, 1, 1.1, 1000);
+		m = expansion(ff1T, x0, 1, 1.4, 1000);
 
 		s_fib = fib(ff1T, m[0], m[1], epsilon);
 		s_lag = lag(ff1T, m[0], m[1], epsilon, gamma, Nmax);
@@ -110,7 +110,7 @@ void lab1()
 		// globalne = 1
 		
 		// expansion
-		printf("%lf, %lf, %lf, %.0lf,", 
+		printf("%lf,%lf,%lf,%.0lf,", 
 			x0,       // x0
 			m[0],     // a
 			m[1],     // b
@@ -118,7 +118,7 @@ void lab1()
 		);
 
 		// fib
-		printf("%.15lf, %.15lf, %d, %d,", 
+		printf("%.15lf,%.15lf,%d,%d,", 
 			m2d(s_fib.x),         // x*
 			m2d(s_fib.y),         // y*
 			s_fib.f_calls,   // f_calls
@@ -126,7 +126,7 @@ void lab1()
 		);
 
 		// lag
-		printf("%.15lf, %.15lf, %d, %d\n", 
+		printf("%.15lf,%.15lf,%d,%d\n", 
 			m2d(s_lag.x),         // x*
 			m2d(s_lag.y),         // y*
 			s_lag.f_calls,   // f_calls
@@ -135,23 +135,14 @@ void lab1()
 
 		delete[] m;
 	}
-
-	// // todo koniec labow
-	/* double* m = expansion(ff1T, 0, 0.1, 1.1, 1000);
-
-	std::cout << "a: " << m[0] << " b: " << m[1] << "\n";
-
-	std::cout << "FIBONACI - solution.x : " << fib(ff1T, m[0], m[1], epsilon).x << "\n";
-	std::cout << "LAGRANGE - solution.x : " << lag(ff1T, m[0], m[1], epsilon, gamma, Nmax).x << "\n";
-
-	delete []m;
-	std::cout << "g(x): " << gg1R(matrix(50)) << "\n";
+ */
 	
-	m = expansion(ff1R, 0, 0.1, 1.1, 1000);
-
-	std::cout << "a: " << m[0] << " b: " << m[1] << "\n";
 	std::cout << "FIBONACI - solution.x : " << fib(ff1R, 1, 100, epsilon, 50).x << "\n";
-	// std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x << "\n"; */
+	std::cout << "LAGRANGE - solution.x : " << lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x << "\n";
+
+	for(int i = 1; i < 100; i++ ){
+		printf("%d: %lf\n", i , m2d(ff1R(matrix(i))));
+	}
 
 }
 
