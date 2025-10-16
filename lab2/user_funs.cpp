@@ -91,29 +91,28 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 	constexpr double F_kran = 10 * 0.001; 		//[m3/s]
 	
 	// czas symulacji [double celowo]
-	constexpr double time_start = 0.0;
-	constexpr double time_end = 2000.0;
-	constexpr double time_step = 1.0;
+	const double time_start = 0.0;
+	const double time_end = 500.0;
+	const double time_step = 1.0;
 
 	double dV_a, dV_b, dT, V_in, T_in;
 
 	double T_max = -300;
 	
 	
-	for(int time = time_start; time < time_end; time+=time_step) {
+	for(double time = time_start; time < time_end; time+=time_step) {
 		// przeliczenie objętości dla zbiornika A
 		if(V_a > 0){
-			dV_a = -a * b * D_a * sqrt(2 * g * V_a / P_a);	// *dt = 1[s] wiec pomijamy
-			V_a = V_a + dV_a * time_step;
+			dV_a = (-a * b * D_a * sqrt(2 * g * V_a / P_a))*time_step;
+			V_a = V_a + dV_a;
 			if(V_a < 0){
-				V_a = 0;
 				dV_a = 0;
+				V_a = 0;
 			}
-			printf("V_a: %lf: ", V_a);
 		}
 		// przeliczenie objętości dla zbiornika B
-		dV_b = -a * b * D_b * sqrt(2 * g * V_b / P_b);	// *dt = 1[s] wiec pomijamy
-		V_b = V_b + dV_b * time_step;
+		dV_b = (-a * b * D_b * sqrt(2 * g * V_b / P_b))*time_step;
+		V_b = V_b + dV_b;
 
 		// suma wpływających płynów do pojemnika B
 		// [] = (z poj. A[m3]) + (z kranu[m3])
@@ -123,14 +122,15 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 		T_in = (-dV_a * T_a + (F_kran*time_step) * T_kran) / V_in;
 
 		// zmiana temperatury płynu w pojemniku B
-		dT = V_in / V_b * (T_in - T);	//*dt pominiete bo 1[s]
-		T = T + dT * time_step;
+		dT =(V_in / V_b * (T_in - T)) * time_step;	//*dt pominiete bo 1[s]
+		V_b += V_in;
+		T = T + dT;
+		// printf("time: %lf\tT: %lf\n", time, T);
 
 		if(T > T_max){
 			T_max = T;
 		}
 	}
-
 	return matrix(T_max);
 }
 
