@@ -59,7 +59,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		if (X1.y == X0.y){
 			p[0] = m2d(X0.x);
 			p[1] = m2d(X1.x);
-			p[2] = static_cast<double>(X1.f_calls) + static_cast<double>(X0.f_calls);
+			p[2] = static_cast<double>(X1.f_calls);
 
 			return p;
 		}
@@ -72,7 +72,7 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 			if(X1.y >= X0.y){
 				p[0] = m2d(X1.x);
 				p[1] = m2d(X0.x)-d;
-				p[2] = static_cast<double>(X1.f_calls) + static_cast<double>(X0.f_calls);
+				p[2] = static_cast<double>(X1.f_calls);
 
 				return p;
 			}
@@ -95,14 +95,14 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 		if (d > 0){
 			p[0] = m2d(s_i[(i-1)%3].x);	// i-1
 			p[1] = m2d(s_i[(i+1)%3].x);	// i+1
-			p[2] = static_cast<double>(X1.f_calls) + static_cast<double>(X0.f_calls);
+			p[2] = static_cast<double>(X1.f_calls);
 
 			return p;
 		}
 
 		p[0] = m2d(s_i[(i+1)%3].x);	// i+1
 		p[1] = m2d(s_i[(i-1)%3].x);	// i-1
-		p[2] = static_cast<double>(X1.f_calls) + static_cast<double>(X0.f_calls);
+		p[2] = static_cast<double>(X1.f_calls);
 		// std::cout << "arrytm: " << static_cast<double>(X1.f_calls) + static_cast<double>(X0.f_calls) << "\n";
 		// std::cout << "p[2]: " << p[2] << "\n";
 		return p;
@@ -115,6 +115,8 @@ double* expansion(matrix(*ff)(matrix, matrix, matrix), double x0, double d, doub
 
 solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, matrix ud1, matrix ud2)
 {
+	solution::clear_calls();
+
 	try
 	{
 		solution Xopt;
@@ -162,7 +164,7 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 		s_left.fit_fun(ff, ud1, ud2);
 		Xopt.x = s_left.x;
 		Xopt.y = s_left.y;
-		s_left.f_calls += s_right.f_calls;
+		// s_left.f_calls += s_right.f_calls;
 		return s_left;
 	}
 	catch (string ex_info)
@@ -174,11 +176,16 @@ solution fib(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, double gamma, int Nmax, matrix ud1, matrix ud2)
 {
+	solution::clear_calls();
+
 	try
 	{
 		int i = 0;
 		double d = 0, l = 0, m = 0;
-		solution Xopt, s_a, s_b, s_c;
+		solution Xopt;
+		solution s_a;
+		solution s_b;
+		solution  s_c;
 
 		solution s_d_i[2];
 		s_d_i[0].x = 2000;
@@ -248,7 +255,7 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 
 		Xopt.x = s_d_i[i%2].x;
 		Xopt.y = s_d_i[i%2].y;
-		Xopt.f_calls = s_a.f_calls + s_b.f_calls + s_c.f_calls + s_d_i[0].f_calls + s_d_i[1].f_calls;
+		// Xopt.f_calls = s_a.f_calls + s_b.f_calls + s_c.f_calls + s_d_i[0].f_calls + s_d_i[1].f_calls;
 		return Xopt;
 	}
 	catch (string ex_info)

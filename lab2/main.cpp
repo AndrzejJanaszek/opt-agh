@@ -86,7 +86,7 @@ void lab1()
 	//			 FUN TESTOWA
 	//#######################################
 
-/* 	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+ 	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
     std::mt19937 gen(rd());                     // generator Mersenne Twister
     std::uniform_real_distribution<double> dist(-100, 100.0); // równomierny rozkład
 
@@ -99,11 +99,18 @@ void lab1()
 		s_fib.clear_calls();
 		s_lag.clear_calls();
 
+		solution::clear_calls();
 		x0 = dist(gen);
 		m = expansion(ff1T, x0, 1, 1.4, 1000);
 
+		solution::clear_calls();
 		s_fib = fib(ff1T, m[0], m[1], epsilon);
+
+		int fib_calls = s_fib.f_calls;
+		
+		solution::clear_calls();
 		s_lag = lag(ff1T, m[0], m[1], epsilon, gamma, Nmax);
+		int lag_calls = s_lag.f_calls;
 
 
 		// lokalne = 0
@@ -121,7 +128,7 @@ void lab1()
 		printf("%.15lf,%.15lf,%d,%d,", 
 			m2d(s_fib.x),         // x*
 			m2d(s_fib.y),         // y*
-			s_fib.f_calls,   // f_calls
+			fib_calls,   // f_calls
 			(s_fib.x > 10) ? 1 : 0 // lokalne/globalne
 		);
 
@@ -129,17 +136,17 @@ void lab1()
 		printf("%.15lf,%.15lf,%d,%d\n", 
 			m2d(s_lag.x),         // x*
 			m2d(s_lag.y),         // y*
-			s_lag.f_calls,   // f_calls
+			lag_calls,   // f_calls
 			(s_lag.x > 10) ? 1 : 0 // lokalne/globalne
 		);
 
 		delete[] m;
-	} */
+	}
 
 	// printf("%lf\n", m2d(fib(ff1R, 1, 100, epsilon, 50).x));
 	// printf("%lf", m2d(lag(ff1R, 1, 100, epsilon, gamma, Nmax, 50).x));
 
-	gg1R(matrix(20.032924));
+	// gg1R(matrix(20.032924));
 
 }
 

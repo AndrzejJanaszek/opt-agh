@@ -129,11 +129,6 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 		if(T > T_max){
 			T_max = T;
 		}
-
-		
-		if(time > 999)
-			printf("%d,%lf,%lf,%lf\n", static_cast<int>(time), V_a, V_b, T);
-
 	}
 	return matrix(T_max);
 }
