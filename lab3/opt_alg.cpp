@@ -264,24 +264,25 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	}
 }
 
-double norm(matrix &x, matrix &y) {
-    int* size = get_size(x);
-    int n = size[0];  // liczba wierszy (zakładam, że wektor kolumnowy)
-    delete[] size;
+// double norm(matrix &x, matrix &y) {
+//     int* size = get_size(x);
+//     int n = size[0];  // liczba wierszy (zakładam, że wektor kolumnowy)
+//     delete[] size;
 
-    double sum = 0.0;
-    for (int i = 0; i < n; i++) {
-        double diff = x(i) - y(i);
-        sum += diff * diff;
-    }
+//     double sum = 0.0;
+//     for (int i = 0; i < n; i++) {
+//         double diff = x(i) - y(i);
+//         sum += diff * diff;
+//     }
 
-    return sqrt(sum);
-}
+//     return sqrt(sum);
+// }
 
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
+		solution::clear_calls();
 		// solution Xopt;
 		// ---------------
 		solution sol_xb, sol_x, sol_xb_try;
@@ -372,10 +373,100 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 {
 	try
 	{
-		solution Xopt;
+		solution::clear_calls();
+		// solution Xopt;
 		//Tu wpisz kod funkcji
 
-		return Xopt;
+		const int WYMIAR = 2;
+		solution sol_xb;
+		solution sol_step;
+		solution sol_x;
+
+		// todo wypełnić jedynkami na przekatnej
+		matrix d = ident_mat(WYMIAR);
+		matrix lambda(WYMIAR, 1, 0.0);
+		matrix p(WYMIAR, 1, 0.0);
+		matrix s(WYMIAR, 1, 0.0);
+		s = s0;
+
+		sol_xb.x = x0;
+
+		double max = -1;
+		do{
+			for(int j = 0; j < WYMIAR; j++){
+				sol_step.x = sol_xb.x + m2d(s(j) * d(j));
+				sol_step.fit_fun(ff, ud1, ud2);
+				sol_xb.fit_fun(ff, ud1, ud2);
+				if(sol_step.y < sol_xb.y){
+					sol_xb.x = sol_xb.x + s(j) * d(j);
+					lambda(j) = lambda(j) + s(j);
+					s(j) = alpha * s(j);
+				}
+				else{
+					s(j) = -beta * s(j);
+					p(j) = p(j) + 1;
+				}
+			}
+
+			sol_x.x = sol_xb.x;
+
+			bool breakFlag = false;
+			for(int j = 0; j < WYMIAR; j++){
+				if(lambda(j) == 0 || p(j) == 0){
+					breakFlag = true;
+					break;
+				}
+			}
+
+			if(breakFlag == false){
+				// zmiana bazy kierunków D
+				matrix temp(WYMIAR, WYMIAR, 0.0);
+				// wypełnienie macierzy pomocniczej
+				for(int j = 0; j < WYMIAR; j++){
+					for(int col = 0; col < j+1; col++){
+						// wiersz j
+						// kolumna col
+						temp(j,col) = lambda(j);	// popraw
+					}
+				}
+
+				matrix Q(WYMIAR, WYMIAR, 0.0);
+				Q = d*temp;
+
+				for(int j = 0; j < WYMIAR; j++){
+					matrix v = get_col(Q, j);        // pobranie j-tej kolumny
+					double v_norm = norm(v);         // norma euklidesowa
+					if(v_norm > 1e-12){              // unikamy dzielenia przez 0
+						for(int i = 0; i < WYMIAR; i++){
+							d(i, j) = v(i) / v_norm; // normalizacja
+						}
+					} else {
+						// jeśli norma ~0, pozostawiamy kierunek bez zmian
+						for(int i = 0; i < WYMIAR; i++){
+							d(i, j) = v(i);
+						}
+					}
+				}
+
+				lambda = 0;
+				p = 0;
+				s = s0;
+			}
+
+			if(solution::f_calls > Nmax){
+				throw std::runtime_error("Za duzo wywołań w funkcji Rosen");
+			}
+
+			max = fabs(s(0));
+			for(int i = 1; i < WYMIAR; i++){
+				if(fabs(s(i)) > max)
+					max = fabs(s(i));
+			}
+		}while(max > epsilon);
+
+
+		sol_x.fit_fun(ff, ud1, ud2);
+		return sol_x;
 	}
 	catch (string ex_info)
 	{

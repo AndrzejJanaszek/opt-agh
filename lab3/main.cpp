@@ -154,21 +154,30 @@ void lab2()
 
 
 	
-	double xx[2] = {0.5,0.5};
+	double xx[2] = {1.0, 0.0};
 	matrix x_zero(2, xx);
 
 	// double y = m2d(ff2T(x_zero, NULL, NULL));
 	// printf("%lf \n", y);
 
-	const double s = 0.2;
-	const double alpha = 0.8;
-	solution::clear_calls();
-	solution rozwiazanie = HJ(ff2T, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
+	// const double s = 0.2;
+	// const double alpha = 0.8;
+	// solution::clear_calls();
+	// solution rozwiazanie = HJ(ff2T, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
 
+	// printf("x1: %lf \n", rozwiazanie.x(0));
+	// printf("x2: %lf \n", rozwiazanie.x(1));
+	// printf("y: %lf \n", rozwiazanie.y(0));
+
+	solution::clear_calls();
+	double ss[2] = {0.3,0.3};
+	matrix s_zero(2, xx);
+	const double alpha = 1.2;
+	const double beta = 0.5;
+	solution rozwiazanie = Rosen(ff2T, x_zero, s_zero, alpha, beta, epsilon, Nmax, NULL, NULL);
 	printf("x1: %lf \n", rozwiazanie.x(0));
 	printf("x2: %lf \n", rozwiazanie.x(1));
 	printf("y: %lf \n", rozwiazanie.y(0));
-
 
 }
 

@@ -1,4 +1,4 @@
-//Ten plik nie powinien byæ edytowany
+//Ten plik nie powinien byï¿½ edytowany
 
 #include"matrix.h"
 
@@ -105,8 +105,10 @@ matrix matrix::operator[](int nv) const
 
 double& matrix::operator()(int nv, int mv)
 {
-	if (nv >= n || mv >= m || nv < 0 || mv < 0)
+	if (nv >= n || mv >= m || nv < 0 || mv < 0){
+		printf("nv: %d, mv: %d, n: %d, n: %d\n", nv, mv, n, m);
 		throw string("double& matrix::operator()(int,int):\nindeks jest poza zakresem");
+	}
 	return M[nv][mv];
 }
 
