@@ -29,7 +29,7 @@ int main()
 	try
 	{
 		// lab0();
-		lab1();
+		lab2();
 	}
 	catch (string EX_INFO)
 	{
@@ -149,6 +149,26 @@ void lab1()
 
 void lab2()
 {
+	double epsilon = 1e-2;
+	int Nmax = 10000;
+
+
+	
+	double xx[2] = {0.5,0.5};
+	matrix x_zero(2, xx);
+
+	// double y = m2d(ff2T(x_zero, NULL, NULL));
+	// printf("%lf \n", y);
+
+	const double s = 0.2;
+	const double alpha = 0.8;
+	solution::clear_calls();
+	solution rozwiazanie = HJ(ff2T, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
+
+	printf("x1: %lf \n", rozwiazanie.x(0));
+	printf("x2: %lf \n", rozwiazanie.x(1));
+	printf("y: %lf \n", rozwiazanie.y(0));
+
 
 }
 

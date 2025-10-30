@@ -9,3 +9,4 @@ matrix ff1R(matrix, matrix = NAN, matrix = NAN);
 matrix df0(double, matrix, matrix = NAN, matrix = NAN);
 matrix gg1R(matrix, matrix = NAN, matrix = NAN);
 
+matrix ff2T(matrix x, matrix ud1, matrix ud2);

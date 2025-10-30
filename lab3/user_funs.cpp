@@ -117,3 +117,7 @@ matrix gg1R(matrix x, matrix ud1, matrix ud2){
 matrix ff1R(matrix x, matrix ud1, matrix ud2){
 	return fabs(m2d(gg1R(x, ud1, ud2)) - 50);
 }
+
+matrix ff2T(matrix x, matrix ud1, matrix ud2){
+	return pow(x(0), 2) + pow(x(1), 2) - cos(2.5 * M_PI * x(0)) - cos(2.5 * M_PI * x(1)) + 2;
+}

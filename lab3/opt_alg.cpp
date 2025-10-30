@@ -264,14 +264,65 @@ solution lag(matrix(*ff)(matrix, matrix, matrix), double a, double b, double eps
 	}
 }
 
+double norm(matrix &x, matrix &y) {
+    int* size = get_size(x);
+    int n = size[0];  // liczba wierszy (zakładam, że wektor kolumnowy)
+    delete[] size;
+
+    double sum = 0.0;
+    for (int i = 0; i < n; i++) {
+        double diff = x(i) - y(i);
+        sum += diff * diff;
+    }
+
+    return sqrt(sum);
+}
+
 solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
+		// solution Xopt;
+		// ---------------
+		solution sol_xb, sol_x, sol_xb_try;
+		sol_x.x = x0;
+		
+		do{
+			sol_xb.x = sol_x.x;
+			sol_x = HJ_trial(ff, sol_xb, s, ud1, ud2);
+	
+			sol_x.fit_fun(ff, ud1, ud2);
+			sol_xb.fit_fun(ff, ud1, ud2);
+			if(sol_x.y < sol_xb.y){
+				do{
+					sol_xb_try.x = sol_xb.x;
+					sol_xb.x = sol_x.x;
+					sol_x.x = 2*sol_xb.x - sol_xb_try.x;
+					printf("x: %lf\n", m2d(sol_x.x(0)));
+					printf("xb: %lf\n", m2d(sol_xb.x(0)));
+	
+					if (norm(sol_x.x - sol_xb.x) < 1e-8)
+						break;
 
-		return Xopt;
+					sol_x = HJ_trial(ff, sol_xb, s, ud1, ud2);
+
+	
+					if(solution::f_calls > Nmax){
+						throw std::runtime_error("Za duzo wywołań w funkcji HJ; (1)");
+					}
+				}while(!(sol_x.y >= sol_xb.y));
+				sol_x.x = sol_xb.x;
+			}
+			else{
+				s = alpha * s;
+			}
+	
+			if(solution::f_calls > Nmax){
+				throw std::runtime_error("Za duzo wywołań w funkcji HJ; (2)");
+			}
+		}while(!(s < epsilon));
+
+		return sol_xb;
 	}
 	catch (string ex_info)
 	{
@@ -281,11 +332,35 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 
 solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, matrix ud1, matrix ud2)
 {
-	try
-	{
-		//Tu wpisz kod funkcji
+	try {
+		const int WYMIAR = 2; // dynamiczny wymiar
+		solution sol_x, sol_trial;
 
-		return XB;
+		sol_x.x = XB.x;
+		sol_x.fit_fun(ff, ud1, ud2);
+
+		for (int j = 0; j < WYMIAR; j++) {
+			// f(x + s*e_j)
+			sol_trial.x = sol_x.x;
+			sol_trial.x(j) += s;
+			sol_trial.fit_fun(ff, ud1, ud2);
+
+			if (sol_trial.y < sol_x.y) {
+				sol_x = sol_trial;
+			}
+			else {
+				// f(x - s*e_j)
+				sol_trial.x = sol_x.x;
+				sol_trial.x(j) -= s;
+				sol_trial.fit_fun(ff, ud1, ud2);
+
+				if (sol_trial.y < sol_x.y) {
+					sol_x = sol_trial;
+				}
+			}
+		}
+
+		return sol_x;
 	}
 	catch (string ex_info)
 	{
