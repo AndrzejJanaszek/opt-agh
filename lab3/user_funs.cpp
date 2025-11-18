@@ -121,3 +121,20 @@ matrix ff1R(matrix x, matrix ud1, matrix ud2){
 matrix ff2T(matrix x, matrix ud1, matrix ud2){
 	return pow(x(0), 2) + pow(x(1), 2) - cos(2.5 * M_PI * x(0)) - cos(2.5 * M_PI * x(1)) + 2;
 }
+
+
+matrix df2(double t, matrix Y, matrix ud1, matrix ud2){
+	double M = ud2(0) * (ud1(0) - Y(0)) + ud2(1) * (ud1(1) - Y(1));
+
+	constexpr double mr = 1;
+	constexpr double mc = 5;
+	constexpr double l = 2;
+	constexpr double b = 0.25;
+	constexpr double I = 1.0 / 3.0 * mr * l*l + mc * l*l;
+
+	matrix dY(2,1);
+	dY(0) = Y(1);
+	dY(1) = ( M - b*Y(1) ) / I;
+
+	return dY;
+}

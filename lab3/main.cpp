@@ -149,35 +149,75 @@ void lab1()
 
 void lab2()
 {
-	double epsilon = 1e-2;
-	int Nmax = 10000;
+	// #####################################################
+	// ###################### TESTOWA ######################
+	// #####################################################
+	// double epsilon = 1e-2;
+	// int Nmax = 10000;
 
 
 	
-	double xx[2] = {1.0, 0.0};
-	matrix x_zero(2, xx);
+	// double xx[2] = {1.0, 0.0};
+	// matrix x_zero(2, xx);
 
-	// double y = m2d(ff2T(x_zero, NULL, NULL));
-	// printf("%lf \n", y);
+	// // double y = m2d(ff2T(x_zero, NULL, NULL));
+	// // printf("%lf \n", y);
 
-	// const double s = 0.2;
-	// const double alpha = 0.8;
+	// // const double s = 0.2;
+	// // const double alpha = 0.8;
+	// // solution::clear_calls();
+	// // solution rozwiazanie = HJ(ff2T, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
+
+	// // printf("x1: %lf \n", rozwiazanie.x(0));
+	// // printf("x2: %lf \n", rozwiazanie.x(1));
+	// // printf("y: %lf \n", rozwiazanie.y(0));
+
 	// solution::clear_calls();
-	// solution rozwiazanie = HJ(ff2T, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
-
+	// double ss[2] = {0.3,0.3};
+	// matrix s_zero(2, xx);
+	// const double alpha = 1.2;
+	// const double beta = 0.5;
+	// solution rozwiazanie = Rosen(ff2T, x_zero, s_zero, alpha, beta, epsilon, Nmax, NULL, NULL);
 	// printf("x1: %lf \n", rozwiazanie.x(0));
 	// printf("x2: %lf \n", rozwiazanie.x(1));
 	// printf("y: %lf \n", rozwiazanie.y(0));
 
-	solution::clear_calls();
-	double ss[2] = {0.3,0.3};
-	matrix s_zero(2, xx);
-	const double alpha = 1.2;
-	const double beta = 0.5;
-	solution rozwiazanie = Rosen(ff2T, x_zero, s_zero, alpha, beta, epsilon, Nmax, NULL, NULL);
-	printf("x1: %lf \n", rozwiazanie.x(0));
-	printf("x2: %lf \n", rozwiazanie.x(1));
-	printf("y: %lf \n", rozwiazanie.y(0));
+	// #####################################################
+	// ###################### RZECZYW ######################
+	// #####################################################
+
+	int a;
+
+	matrix y = 0;
+
+	matrix Y0(2,1);
+	Y0(0)=0;
+	Y0(1)=0;
+
+	matrix Y_ref(2,1);
+	Y_ref(0) = M_PI;
+	Y_ref(1) = 0;
+
+	matrix x(2,1);
+	x(0) = 5;
+	x(1) = 5;
+	
+	matrix *Y = solve_ode(df2, 0 , 0.1, 100, Y0, Y_ref, x);
+
+	int n = get_len(Y[0]);
+
+	for(int i = 0; i < n; i++){
+		double Mt = x(0)*( Y_ref(0) - Y[1](i,0)) + 
+					x(1)*( Y_ref(1) - Y[1](i,1));
+		y = y + 
+		10 * pow(Y_ref(0) - Y[1](i,0),2) + 
+		pow(Y_ref(1) - Y[1](i,1),2) +
+		pow(Mt, 2);
+	}
+
+	y = 0.1 * y;
+
+	printf("Jakiś śmieszny wynik całki: %lf\n", m2d(y));
 
 }
 
