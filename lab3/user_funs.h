@@ -12,3 +12,4 @@ matrix gg1R(matrix, matrix = NAN, matrix = NAN);
 matrix ff2T(matrix x, matrix ud1, matrix ud2);
 
 matrix df2(double, matrix, matrix = NAN, matrix = NAN);
+matrix ff2R(matrix, matrix = NAN, matrix = NAN);

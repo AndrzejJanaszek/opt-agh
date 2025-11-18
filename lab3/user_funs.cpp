@@ -138,3 +138,36 @@ matrix df2(double t, matrix Y, matrix ud1, matrix ud2){
 
 	return dY;
 }
+
+matrix ff2R(matrix x, matrix ud1, matrix ud2){
+	matrix y = 0;
+
+	matrix Y0(2,1);
+	Y0(0)=0;
+	Y0(1)=0;
+
+	matrix Y_ref(2,1);
+	Y_ref(0) = M_PI;
+	Y_ref(1) = 0;
+	
+	matrix *Y = solve_ode(df2, 0 , 0.1, 100, Y0, Y_ref, x);
+
+	int n = get_len(Y[0]);
+	
+	for(int i = 0; i < n; i++){
+		double Mt = x(0)*( Y_ref(0) - Y[1](i,0)) + 
+					x(1)*( Y_ref(1) - Y[1](i,1));
+		y = y + 
+		10 * pow(Y_ref(0) - Y[1](i,0),2) + 
+		pow(Y_ref(1) - Y[1](i,1),2) +
+		pow(Mt, 2);
+	}
+
+	delete[] Y;
+
+	y = 0.1 * y;
+	return y;
+	// printf("Jakiś śmieszny wynik całki: %lf\n", m2d(y));
+	// printf("k1: %lf\n", m2d(x(0)) );
+	// printf("k2: %lf\n", m2d(x(1)) );
+}

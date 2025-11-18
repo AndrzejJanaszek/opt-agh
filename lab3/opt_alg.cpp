@@ -299,8 +299,8 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 					sol_xb_try.x = sol_xb.x;
 					sol_xb.x = sol_x.x;
 					sol_x.x = 2*sol_xb.x - sol_xb_try.x;
-					printf("x: %lf\n", m2d(sol_x.x(0)));
-					printf("xb: %lf\n", m2d(sol_xb.x(0)));
+					// printf("x: %lf\n", m2d(sol_x.x(0)));
+					// printf("xb: %lf\n", m2d(sol_xb.x(0)));
 	
 					if (norm(sol_x.x - sol_xb.x) < 1e-8)
 						break;
@@ -369,20 +369,148 @@ solution HJ_trial(matrix(*ff)(matrix, matrix, matrix), solution XB, double s, ma
 	}
 }
 
+// solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+// {
+// 	try
+// 	{
+// 		solution::clear_calls();
+// 		// solution Xopt;
+// 		//Tu wpisz kod funkcji
+
+// 		const int WYMIAR = 2;
+// 		solution sol_xb;
+// 		solution sol_step;
+// 		solution sol_x;
+
+// 		// todo wypełnić jedynkami na przekatnej
+// 		matrix d = ident_mat(WYMIAR);
+// 		matrix lambda(WYMIAR, 1, 0.0);
+// 		matrix p(WYMIAR, 1, 0.0);
+// 		matrix s(WYMIAR, 1, 0.0);
+// 		s = s0;
+
+// 		sol_xb.x = x0;
+
+// 		double max = -1;
+// 		do{
+// 			for(int j = 0; j < WYMIAR; j++){
+// 				matrix dir = get_col(d, j);            // lub d.get_col(j)
+// 				sol_step.x = sol_xb.x + s(j) * dir;
+// 				// sol_step.x = sol_xb.x + s(j) * d(j);
+// 				sol_step.fit_fun(ff, ud1, ud2);
+// 				sol_xb.fit_fun(ff, ud1, ud2);
+// 				if(sol_step.y < sol_xb.y){
+// 					sol_xb.x = sol_xb.x + s(j) * d(j);
+// 					lambda(j) = lambda(j) + s(j);
+// 					s(j) = alpha * s(j);
+// 				}
+// 				else{
+// 					s(j) = -beta * s(j);
+// 					p(j) = p(j) + 1;
+// 				}
+// 			}
+
+// 			sol_x.x = sol_xb.x;
+
+// 			bool breakFlag = false;
+// 			for(int j = 0; j < WYMIAR; j++){
+// 				if(lambda(j) == 0 || p(j) == 0){
+// 					breakFlag = true;
+// 					break;
+// 				}
+// 			}
+
+// 			if(breakFlag == false){
+// 				// zmiana bazy kierunków D
+// 				matrix temp(WYMIAR, WYMIAR, 0.0);
+// 				// wypełnienie macierzy pomocniczej
+// 				for(int j = 0; j < WYMIAR; j++){
+// 					for(int col = 0; col < j+1; col++){
+// 						// wiersz j
+// 						// kolumna col
+// 						temp(j,col) = lambda(j);	// popraw
+// 					}
+// 				}
+
+// 				/* matrix Q(WYMIAR, WYMIAR, 0.0);
+// 				Q = d*temp;
+
+// 				for(int j = 0; j < WYMIAR; j++){
+// 					matrix v = get_col(Q, j);        // pobranie j-tej kolumny
+// 					double v_norm = norm(v);         // norma euklidesowa
+// 					if(v_norm > 1e-12){              // unikamy dzielenia przez 0
+// 						for(int i = 0; i < WYMIAR; i++){
+// 							d(i, j) = v(i) / v_norm; // normalizacja
+// 						}
+// 					} else {
+// 						// jeśli norma ~0, pozostawiamy kierunek bez zmian
+// 						for(int i = 0; i < WYMIAR; i++){
+// 							d(i, j) = v(i);
+// 						}
+// 					}
+// 				}
+//  */
+// 				matrix Q(WYMIAR, WYMIAR), v(WYMIAR, 1);
+
+// 				for (int i = 0; i < WYMIAR; ++i)
+// 					for (int j = 0; j <= i; ++j)
+// 						Q(i, j) = lambda(i);
+
+// 				Q = d * Q;
+
+// 				v = Q[0] / norm(Q[0]);
+// 				d.set_col(v, 0);
+
+// 				for (int i = 1; i < WYMIAR; ++i)
+// 				{
+// 					matrix temp(WYMIAR, 1);
+// 					for (int j = 0; j < i; ++j)
+// 						temp = temp + (trans(Q[i]) * d[j]) * d[j];
+
+// 					v = Q[i] - temp;
+// 					d.set_col(v / norm(v), i);
+// 				}
+
+// 				lambda = matrix(WYMIAR, 1);
+// 				p = matrix(WYMIAR, 1);
+// 				// printf("n: %d\n", p.n);
+// 				s = s0;
+// 			}
+
+// 			if(solution::f_calls > Nmax){
+// 				throw std::runtime_error("Za duzo wywołań w funkcji Rosen");
+// 			}
+
+// 			max = fabs(s(0));
+// 			for(int i = 1; i < WYMIAR; i++){
+// 				if(fabs(s(i)) > max)
+// 					max = fabs(s(i));
+// 			}
+// 		}while(max > epsilon);
+
+
+// 		sol_x.fit_fun(ff, ud1, ud2);
+// 		return sol_x;
+// 	}
+// 	catch (string ex_info)
+// 	{
+// 		throw ("solution Rosen(...):\n" + ex_info);
+// 	}
+// }
+
+
 solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double alpha, double beta, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
 		solution::clear_calls();
-		// solution Xopt;
-		//Tu wpisz kod funkcji
 
 		const int WYMIAR = 2;
 		solution sol_xb;
 		solution sol_step;
 		solution sol_x;
 
-		// todo wypełnić jedynkami na przekatnej
+		// początkowe macierze/kierunki
 		matrix d = ident_mat(WYMIAR);
 		matrix lambda(WYMIAR, 1, 0.0);
 		matrix p(WYMIAR, 1, 0.0);
@@ -390,19 +518,24 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 		s = s0;
 
 		sol_xb.x = x0;
+		// policz wartość funkcji w punkcie startowym RAZ
+		sol_xb.fit_fun(ff, ud1, ud2);
 
 		double max = -1;
-		do{
-			for(int j = 0; j < WYMIAR; j++){
-				sol_step.x = sol_xb.x + m2d(s(j) * d(j));
-				sol_step.fit_fun(ff, ud1, ud2);
-				sol_xb.fit_fun(ff, ud1, ud2);
-				if(sol_step.y < sol_xb.y){
-					sol_xb.x = sol_xb.x + s(j) * d(j);
+		do {
+			// pętla po kierunkach - korzystamy z sol_xb.y bez ponownego liczenia
+			for (int j = 0; j < WYMIAR; j++) {
+				matrix dir = get_col(d, j);            // kierunek jako kolumna (nx1)
+				sol_step.x = sol_xb.x + s(j) * dir;    // proponowany krok
+				sol_step.fit_fun(ff, ud1, ud2);        // liczymy jedynie sol_step
+
+				if (sol_step.y < sol_xb.y) {
+					// zaakceptuj krok: sol_xb := sol_step (kopiuje x i y)
+					sol_xb = sol_step;
 					lambda(j) = lambda(j) + s(j);
 					s(j) = alpha * s(j);
 				}
-				else{
+				else {
 					s(j) = -beta * s(j);
 					p(j) = p(j) + 1;
 				}
@@ -410,61 +543,70 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 
 			sol_x.x = sol_xb.x;
 
+			// sprawdzenie warunku zmiany bazy
 			bool breakFlag = false;
-			for(int j = 0; j < WYMIAR; j++){
-				if(lambda(j) == 0 || p(j) == 0){
+			for (int j = 0; j < WYMIAR; j++) {
+				if (lambda(j) == 0 || p(j) == 0) {
 					breakFlag = true;
 					break;
 				}
 			}
 
-			if(breakFlag == false){
+			if (breakFlag == false) {
 				// zmiana bazy kierunków D
 				matrix temp(WYMIAR, WYMIAR, 0.0);
 				// wypełnienie macierzy pomocniczej
-				for(int j = 0; j < WYMIAR; j++){
-					for(int col = 0; col < j+1; col++){
-						// wiersz j
-						// kolumna col
-						temp(j,col) = lambda(j);	// popraw
+				for (int j = 0; j < WYMIAR; j++) {
+					for (int col = 0; col < j + 1; col++) {
+						temp(j, col) = lambda(j);
 					}
 				}
 
-				matrix Q(WYMIAR, WYMIAR, 0.0);
-				Q = d*temp;
+				matrix Q(WYMIAR, WYMIAR), v(WYMIAR, 1);
 
-				for(int j = 0; j < WYMIAR; j++){
-					matrix v = get_col(Q, j);        // pobranie j-tej kolumny
-					double v_norm = norm(v);         // norma euklidesowa
-					if(v_norm > 1e-12){              // unikamy dzielenia przez 0
-						for(int i = 0; i < WYMIAR; i++){
-							d(i, j) = v(i) / v_norm; // normalizacja
-						}
-					} else {
-						// jeśli norma ~0, pozostawiamy kierunek bez zmian
-						for(int i = 0; i < WYMIAR; i++){
-							d(i, j) = v(i);
-						}
-					}
+				for (int i = 0; i < WYMIAR; ++i)
+					for (int j = 0; j <= i; ++j)
+						Q(i, j) = lambda(i);
+
+				Q = d * Q;
+
+				// pierwszy kierunek
+				v = Q[0] / norm(Q[0]);
+				d.set_col(v, 0);
+
+				// kolejne kierunki: Gram–Schmidt (jak w kodzie 1)
+				for (int i = 1; i < WYMIAR; ++i)
+				{
+					matrix tempVec(WYMIAR, 1);
+					for (int j = 0; j < i; ++j)
+						tempVec = tempVec + (trans(Q[i]) * d[j]) * d[j];
+
+					v = Q[i] - tempVec;
+					double vn = norm(v);
+					if (vn > 1e-12)
+						d.set_col(v / vn, i);
+					// else: zachowaj poprzedni kierunek
 				}
 
-				lambda = 0;
-				p = 0;
+				// reset
+				lambda = matrix(WYMIAR, 1, 0.0);
+				p = matrix(WYMIAR, 1, 0.0);
 				s = s0;
 			}
 
-			if(solution::f_calls > Nmax){
+			if (solution::f_calls > Nmax) {
 				throw std::runtime_error("Za duzo wywołań w funkcji Rosen");
 			}
 
+			// warunek stopu
 			max = fabs(s(0));
-			for(int i = 1; i < WYMIAR; i++){
-				if(fabs(s(i)) > max)
+			for (int i = 1; i < WYMIAR; i++) {
+				if (fabs(s(i)) > max)
 					max = fabs(s(i));
 			}
-		}while(max > epsilon);
+		} while (max > epsilon);
 
-
+		// finalne policzenie y dla sol_x (jeśli potrzebne)
 		sol_x.fit_fun(ff, ud1, ud2);
 		return sol_x;
 	}
@@ -474,7 +616,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 	}
 }
 
-solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
+ solution pen(matrix(*ff)(matrix, matrix, matrix), matrix x0, double c, double dc, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try {
 		solution Xopt;
