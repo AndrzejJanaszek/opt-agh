@@ -290,6 +290,8 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 		
 		do{
 			sol_xb.x = sol_x.x;
+			// printf("%lf ", sol_xb.x(0));
+			// printf("%lf \n", sol_xb.x(1));
 			sol_x = HJ_trial(ff, sol_xb, s, ud1, ud2);
 	
 			sol_x.fit_fun(ff, ud1, ud2);
@@ -301,7 +303,7 @@ solution HJ(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alp
 					sol_x.x = 2*sol_xb.x - sol_xb_try.x;
 					// printf("x: %lf\n", m2d(sol_x.x(0)));
 					// printf("xb: %lf\n", m2d(sol_xb.x(0)));
-	
+
 					if (norm(sol_x.x - sol_xb.x) < 1e-8)
 						break;
 
@@ -534,11 +536,15 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 					sol_xb = sol_step;
 					lambda(j) = lambda(j) + s(j);
 					s(j) = alpha * s(j);
+
+					// printf("%lf ", sol_xb.x(0));
+					// printf("%lf \n", sol_xb.x(1));
 				}
 				else {
 					s(j) = -beta * s(j);
 					p(j) = p(j) + 1;
 				}
+
 			}
 
 			sol_x.x = sol_xb.x;
@@ -574,7 +580,7 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 				v = Q[0] / norm(Q[0]);
 				d.set_col(v, 0);
 
-				// kolejne kierunki: Gram–Schmidt (jak w kodzie 1)
+				// kolejne kierunki: Gram–Schmidt
 				for (int i = 1; i < WYMIAR; ++i)
 				{
 					matrix tempVec(WYMIAR, 1);
@@ -592,6 +598,8 @@ solution Rosen(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix s0, double
 				lambda = matrix(WYMIAR, 1, 0.0);
 				p = matrix(WYMIAR, 1, 0.0);
 				s = s0;
+
+				
 			}
 
 			if (solution::f_calls > Nmax) {

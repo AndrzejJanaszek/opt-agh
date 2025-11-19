@@ -161,6 +161,10 @@ matrix ff2R(matrix x, matrix ud1, matrix ud2){
 		10 * pow(Y_ref(0) - Y[1](i,0),2) + 
 		pow(Y_ref(1) - Y[1](i,1),2) +
 		pow(Mt, 2);
+
+		printf("%lf ", Y[1](i,0));
+		printf("%lf", Y[1](i,1));
+		printf("\n");
 	}
 
 	delete[] Y;

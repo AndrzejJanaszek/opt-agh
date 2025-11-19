@@ -185,12 +185,12 @@ void lab2()
 	// #####################################################
 	// ###################### RZECZYW ######################
 	// #####################################################
-	double epsilon = 1e-2;
-	int Nmax = 10000;
-	// ------------------
-	// warunki początkowe
-	double xx[2] = {3.0, 9.0};
-	matrix x_zero(2, xx);
+	// double epsilon = 1e-2;
+	// int Nmax = 10000;
+	// // ------------------
+	// // warunki początkowe
+	// double xx[2] = {3.0, 9.0};
+	// matrix x_zero(2, xx);
 
 	// const double s = 0.5;
 	// const double alpha = 0.8;
@@ -198,20 +198,100 @@ void lab2()
 	// solution::clear_calls();
 	// solution rozwiazanie_hj = HJ(ff2R, x_zero, s, alpha, epsilon, Nmax, NULL, NULL);
 
-	// printf("x1: %lf\n", rozwiazanie_hj.x(0));
-	// printf("x2: %lf\n", rozwiazanie_hj.x(1));
-	// printf("y: %lf\n", rozwiazanie_hj.y(0));
+	// printf("%lf ", rozwiazanie_hj.x(0));
+	// printf("%lf ", rozwiazanie_hj.x(1));
+	// printf("%lf ", rozwiazanie_hj.y(0));
+	// printf("%d ", solution::f_calls);
 
-	double ss[2] = {0.5,0.5};
-	matrix s_zero(2, ss);
-	const double alpha_rosen = 1.2;
-	const double beta = 0.8;
-	solution::clear_calls();
-	solution rozwiazanie_rosen = Rosen(ff2R, x_zero, s_zero, alpha_rosen, beta, epsilon, Nmax, NULL, NULL);
+	// double ss[2] = {0.5,0.5};
+	// matrix s_zero(2, ss);
+	// const double alpha_rosen = 1.2;
+	// const double beta = 0.8;
+	// solution::clear_calls();
+	// solution rozwiazanie_rosen = Rosen(ff2R, x_zero, s_zero, alpha_rosen, beta, epsilon, Nmax, NULL, NULL);
 
-	printf("x1: %lf \n", rozwiazanie_rosen.x(0));
-	printf("x2: %lf \n", rozwiazanie_rosen.x(1));
-	printf("y: %lf \n", rozwiazanie_rosen.y(0));
+	// printf("%lf  ", rozwiazanie_rosen.x(0));
+	// printf("%lf  ", rozwiazanie_rosen.x(1));
+	// printf("%lf  ", rozwiazanie_rosen.y(0));
+	// printf("%d ", solution::f_calls);
+
+	matrix k(2,1);
+
+	k(0)=3.0023;
+	k(1)=10.834834;
+	ff2R(k, NULL, NULL);
+
+	// #####################################################
+	// ###################### EXCEL ########################
+	// #####################################################
+// 	double epsilon = 1e-2;
+// 	int Nmax = 10000;
+
+// 	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+//     std::mt19937 gen(rd());                     // generator Mersenne Twister
+//     std::uniform_real_distribution<double> dist(-1.0, 1.0); // równomierny rozkład
+	
+// 	matrix x0(2,1);
+
+// 	const double s = 0.9;
+// 	matrix s0(2,1);
+// 	s0(0) = s;
+// 	s0(1) = s;
+// 	const double alpha = 0.3;
+// 	const double alpha_rosen = 1.1;
+// 	const double beta_rosen = 0.2;
+
+// 	for(int i = 0; i < 1; i++){
+// 		x0(0) = dist(gen);
+// 		x0(1) = dist(gen);
+
+// 		x0(0) = 0.21;
+// 		x0(1) = 0.37;
+
+// 		solution sol;
+
+// // ############################################################
+
+// 		solution::clear_calls();
+// 		sol = HJ(ff2T, x0, s, alpha, epsilon, Nmax, NULL, NULL);
+// 		/* 
+// 		// 0 x1
+// 		// 0 x2
+// 		printf("%lf ", x0(0));
+// 		printf("%lf ", x0(1));
+
+// 		// x1
+// 		// x2
+// 		// y
+// 		printf("%lf ", sol.x(0));
+// 		printf("%lf ", sol.x(1));
+// 		printf("%lf ", sol.y(0));
+		
+// 		// f_calls
+// 		printf("%d ", sol.f_calls);
+// 		printf("%d ", 0); */
+
+// printf("\n");
+// // ############################################################
+
+// 		solution::clear_calls();
+// 		sol = Rosen(ff2T, x0, s0, alpha_rosen, beta_rosen, epsilon, Nmax, NULL, NULL);
+// 		/* // sol = Rosen();
+
+// 		// x1
+// 		// x2
+// 		// y
+// 		printf("%lf ", sol.x(0));
+// 		printf("%lf ", sol.x(1));
+// 		printf("%lf ", sol.y(0));
+		
+// 		// f_calls
+// 		printf("%d ", sol.f_calls);
+// 		printf("%d ", 0);
+
+// 		printf("\n"); */
+// 	}
+
 }
 
 void lab3()
