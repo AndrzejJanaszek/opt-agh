@@ -296,7 +296,22 @@ void lab2()
 
 void lab3()
 {
-	ffT2;
+	double epsilon = 1e-2;
+	int Nmax = 10000;
+	matrix x0(2,1);
+
+	x0(0,0) = 1.0;
+	x0(1,0) = 1.0;
+	double s = 0.5;
+	double alpha = 1;	// = 1
+	double beta = 0.5;	// < 1
+	double gamma = 2;	// > 1
+	double delta = 0.5;	// < 1
+
+	solution wynik = sym_NM(ff3T, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, NULL, NULL);
+	double x1 = wynik.x(0);
+	double x2 = wynik.x(1);
+	printf("x1: %lf, x2: %lf, y: %lf\n", x1, x2, wynik.y);
 }
 
 void lab4()
