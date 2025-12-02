@@ -1,5 +1,11 @@
 #include"user_funs.h"
 #include <math.h>	//todo check on linux
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+// #include <cmath>
+// #include <corecrt_math_defines.h>
 // #include <corecrt_math.h>			// for windows
 // #include <corecrt_math_defines.h>	// for windows
 
@@ -187,4 +193,129 @@ matrix ff3T(matrix x, matrix ud1, matrix ud2){
 	matrix res;
 	res = val;
 	return res;
+}
+matrix ff3T_zew(matrix x, matrix ud1, matrix ud2){
+	double r = std::sqrt( (x(0)/M_PI)*(x(0)/M_PI) + (x(1)/M_PI)*(x(1)/M_PI) );
+    double denom = M_PI * r;
+
+    double val = (denom == 0.0)
+        ? 1.0           // granica sin(t)/t -> 1 dla t→0
+        : std::sin(M_PI * r) / denom;
+
+	matrix res;
+	res = val;
+
+	if(-x(0) + 1 > 0){
+		res = res + ud2 * pow(-x(0) + 1, 2);
+	}
+	if(-x(1) + 1 > 0){
+		res = res + ud2 * pow(-x(1) + 1, 2);
+	}
+	if(norm(x) - ud1 > 0){
+		res = res + ud2 * pow(norm(x) - ud1, 2);
+	}
+
+
+	return res;
+}
+matrix ff3T_wew(matrix x, matrix ud1, matrix ud2){
+	double r = std::sqrt( (x(0)/M_PI)*(x(0)/M_PI) + (x(1)/M_PI)*(x(1)/M_PI) );
+    double denom = M_PI * r;
+
+    double val = (denom == 0.0)
+        ? 1.0           // granica sin(t)/t -> 1 dla t→0
+        : std::sin(M_PI * r) / denom;
+
+	matrix res;
+	res = val;
+
+	// w warunkach daliśmy >= itd żeby nie było błędu dzielenia przez 0
+	#define DBL_MAX 1.7976931348623158e+308
+	if(-x(0) + 1 >= 0){
+		res = DBL_MAX;
+	}
+	else{
+		res = res - ud2 / (-x(0) + 1);
+	}
+	if(-x(1) + 1 >= 0){
+		res = DBL_MAX;
+	}
+	else{
+		res = res - ud2 / (-x(1) + 1);
+	}
+	if(norm(x) - ud1 >= 0){
+		res = DBL_MAX;
+	}
+	else{
+		res = res - ud2 / (norm(x) - ud1);
+	}
+
+	return res;
+}
+
+matrix df3(double t, matrix Y, matrix ud1, matrix ud2){
+	// dane wstepne
+	const double r = 0.12;	// 12 cm
+	const double m = 0.6; 	// 600g = masa
+	const double y0 = 100;
+
+	// stałe
+	const double g = 9.81;
+	const double C = 0.47;
+	const double ro = 1.2;
+	const double S = M_PI * r*r;
+
+	double vx =  Y(1);	// dx/dt
+	double vy = Y(3);	// dx/dt
+	double Dx = 0.5 * C * ro * S * vx * fabs(vx);
+	double Dy = 0.5 * C * ro * S * vy * fabs(vy);
+	double omega = ud1(1);	// TODO
+	double Fmx = ro * vy * omega * M_PI * r*r*r;
+	double Fmy = ro * vx * omega * M_PI * r*r*r;
+
+	matrix dY(4,1);
+	dY(0) = Y(1);
+	dY(1) = (-Dx - Fmx)/m;
+	dY(2) = Y(3);
+	dY(3) = (-m*g -Dy - Fmy)/m;
+
+	return dY;
+}
+
+matrix ff3R(matrix x, matrix ud1, matrix ud2){
+	matrix Y0(4,1);
+	Y0(0) = 0;
+	Y0(1) = x(0);
+	Y0(2) = 100;
+	Y0(3) = 0;
+
+	matrix *Y = solve_ode(df3, 0 , 0.01, 7, Y0, x, NULL);	//todo
+
+	int i0 = 0;
+	int i50 = 0;
+
+	int n = get_len(Y[0]);
+
+	matrix y = 0;
+
+	for(int i = 0; i < n; i++){
+		if( fabs( Y[1](i,2) - 50 ) < fabs( Y[1](i50,2) - 50 ) ){	//todo
+			i50 = i;
+		}
+		if( fabs( Y[1](i,2) ) < fabs( Y[1](i0,2) ) ){
+			i0 = i;
+			y = -Y[1](i0,0);
+		}
+		if( fabs( x(0) ) - 10 > 0){
+			y = y + ud2 * pow( fabs( x(0) ) - 10, 2 );
+		}
+		if( fabs( x(1) ) - 10 > 0){
+			y = y + ud2 * pow( fabs( x(0) ) - 10, 2 );
+		}
+		if( fabs( Y[1](i50,0) - 5 ) - 2 > 0){
+			y = y + ud2 * pow( fabs( Y[1](i50,0) - 5 ) - 2, 2 );
+		}
+	}
+
+	return y;
 }
