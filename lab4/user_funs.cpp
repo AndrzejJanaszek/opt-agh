@@ -307,15 +307,24 @@ matrix ff3R(matrix x, matrix ud1, matrix ud2){
 			y = -Y[1](i0,0);
 		}
 		if( fabs( x(0) ) - 10 > 0){
+			// printf("x0");
 			y = y + ud2 * pow( fabs( x(0) ) - 10, 2 );
 		}
 		if( fabs( x(1) ) - 10 > 0){
-			y = y + ud2 * pow( fabs( x(0) ) - 10, 2 );
+			// printf("x1");
+			y = y + ud2 * pow( fabs( x(1) ) - 10, 2 );
 		}
 		if( fabs( Y[1](i50,0) - 5 ) - 2 > 0){
 			y = y + ud2 * pow( fabs( Y[1](i50,0) - 5 ) - 2, 2 );
+			// y = 99999999;
 		}
+
+		printf("%lf ", i*0.01);
+		printf("%lf ", Y[1](i,0));
+		printf("%lf ", Y[1](i,2));
+		printf("\n");
 	}
 
+	// printf("Przez kosz: %lf\n",Y[1](i50,0));
 	return y;
 }

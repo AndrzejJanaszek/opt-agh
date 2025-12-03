@@ -215,11 +215,11 @@ void lab2()
 	// printf("%lf  ", rozwiazanie_rosen.y(0));
 	// printf("%d ", solution::f_calls);
 
-	matrix k(2,1);
+	// matrix k(2,1);
 
-	k(0)=3.0023;
-	k(1)=10.834834;
-	ff2R(k, NULL, NULL);
+	// k(0)=3.0023;
+	// k(1)=10.834834;
+	// ff2R(k, NULL, NULL);
 
 	// #####################################################
 	// ###################### EXCEL ########################
@@ -296,34 +296,115 @@ void lab2()
 
 void lab3()
 {
-	double epsilon = 1e-2;
+	double epsilon = 1e-3;
 	int Nmax = 10000;
 	matrix x0(2,1);
 
 	
 	x0(0,0) = 1.1;
 	x0(1,0) = 1.1;
-	double s = 0.5;
+	double s = 0.1;
 	double alpha = 1;	// = 1
 	double beta = 0.5;	// < 1
 	double gamma = 2;	// > 1
 	double delta = 0.5;	// < 1
 
 	matrix a = 5;
-	matrix c = 100;
-	solution wynik = sym_NM(ff3T_wew, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, a, c);
-	double x1 = wynik.x(0);
-	double x2 = wynik.x(1);
-	printf("x1: %lf, x2: %lf, y: %lf\n", x1, x2, wynik.y);
+	matrix c = 10000;
+	// solution wynik = sym_NM(ff3T_wew, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, a, c);
+	// double x1 = wynik.x(0);
+	// double x2 = wynik.x(1);
+	// printf("x1: %lf, x2: %lf, y: %lf\n", x1, x2, wynik.y);
 
 
+	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+	std::mt19937 gen(rd());                     // generator Mersenne Twister
+	std::uniform_real_distribution<double> dist(0, 7); // równomierny rozkład
 
-	/* x0(0,0) = 5;
-	x0(1,0) = 10;
+	/* for(int i = 0; i < 100; i++){
+		// wygeneruj x0 w przedziale
+		bool warunek = false;
+		do{
+			warunek = false;
+			x0(0) = dist(gen);
+			x0(1) = dist(gen);
+			
+			if(-x0(0) + 1 >= 0 || -x0(1) + 1 >= 0 || norm(x0) - a >= 0){
+				warunek = true;
+			}
+		}while(warunek);
 
-	matrix res = ff3R(x0,NULL,NULL);
+		printf("%lf ", x0(0));						// x1
+		printf("%lf ", x0(1));						// x2
 
-	printf("asd"); */
+		solution::clear_calls();
+		solution wynik2 = sym_NM(ff3T_zew, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, a, c);
+		printf("%lf ", wynik2.x(0));				// x
+		printf("%lf ", wynik2.x(1));				// x
+		printf("%lf ", norm(wynik2.x));				// r
+		printf("%lf ", wynik2.y(0));				// y
+		printf("%d ", solution::f_calls);			// f_calls
+		
+		solution::clear_calls();
+		solution wynik1 = sym_NM(ff3T_wew, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, a, c);
+		printf("%lf ", wynik1.x(0));				// x
+		printf("%lf ", wynik1.x(1));				// x
+		printf("%lf ", norm(wynik1.x));				// r
+		// printf("%lf ", wynik1.y(0));				// y
+		printf("%lf ", ff3T(wynik1.x, NULL, NULL)(0));				// x
+		printf("%d ", solution::f_calls);			// f_calls
+
+
+		printf("\n");
+
+	}
+ */
+	
+	printf("x0_1 ");
+	printf("x0_2 ");
+	printf("sol_x1 ");
+	printf("sol_x2 ");
+	printf("\n");
+
+	x0(0,0) = 0;
+	x0(1,0) = 9.6;
+	// solution::clear_calls();
+	// solution real_solution = sym_NM(ff3R, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, NULL, c);
+	// printf("%d ", solution::f_calls);
+	// printf("%lf ", real_solution.x(0));
+	// printf("%lf ", real_solution.x(1));
+	// printf("%lf ", real_solution.y(0));
+
+	double wynik = ff3R(x0, NULL, c)(0);
+	printf("%lf ", wynik);
+
+	
+
+	// for(double i = -2; i <= 5; i += 1){
+	// 	printf("\ni: %lf\n", i);
+	// 	for(double j = -10; j <= 10; j += 1){
+	// 		x0(0,0) = i;
+	// 		x0(1,0) = j;
+	// 		// solution real_solution = sym_NM(ff3R, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, NULL, c);
+
+	// 		// printf("%lf ", x0(0));
+	// 		// printf("%lf ", x0(1));
+	// 		// printf("%lf ", real_solution.x(0));
+	// 		// printf("%lf ", real_solution.x(1));
+	// 		// printf("%lf ", ff3R(real_solution.x, NULL, NULL)(0));
+	// 		// printf("\n");
+	// 		double wynik = ff3R(x0, NULL, c)(0);
+	// 		if(wynik > 100){
+	// 			wynik = 0;
+	// 		}
+	// 		else{
+	// 			// i=0 j=9
+	// 			printf("j:%lf(%lf) ", j, wynik);
+	// 		}
+	// 	}
+	// }
+	
+ 	
 }
 
 void lab4()

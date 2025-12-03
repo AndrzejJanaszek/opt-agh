@@ -683,8 +683,8 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 				if(i != max_i){
 					sum = sum + punkty_sol[i].x;
 				}
-				p_srodek.x = sum / 2.0;
 			}
+			p_srodek.x = sum / 2.0;
 
 			solution p_odb;
 			p_odb.x = p_srodek.x + alpha*(p_srodek.x - punkty_sol[max_i].x);
@@ -736,8 +736,9 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 			// warunek przerwania pętli
 			double max_length = 0;
 			for(int i = 0; i < 3; i++){
-				matrix diff = punkty_sol[min_i].x - punkty_sol[i].x;
-				double square = diff(0)*diff(0) + diff(1)*diff(1);
+				// matrix diff = punkty_sol[min_i].x - punkty_sol[i].x;
+				double square = norm(punkty_sol[min_i].x - punkty_sol[i].x);
+				// double square = diff(0)*diff(0) + diff(1)*diff(1);
 				if(square > max_length){
 					max_length = square;
 				}
@@ -757,7 +758,116 @@ solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double
 	}
 }
 
-solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
+//  solution sym_NM(matrix(*ff)(matrix, matrix, matrix), matrix x0, double s, double alpha, double beta, double gamma, double delta, double epsilon, int Nmax, matrix ud1, matrix ud2)
+// {
+// 	try
+// 	{
+// 		//Funkcja pomocnicza
+// 		auto max = [&](std::vector<solution> sim, int i_min) -> double
+// 		{
+// 			double result = 0.0;
+// 			for (int i = 0; i < sim.size(); ++i)
+// 			{
+// 				double normal = norm(sim[i_min].x - sim[i].x);
+// 				if (result < normal)
+// 					result = normal;
+// 			}
+// 			return result;
+// 		};
+
+// 		int n = get_len(x0);
+
+// 		//Tworzenie bazy ortogonalnej
+// 		matrix d = matrix(n, n);
+// 		for (int i = 0; i < n; ++i)
+// 			d(i, i) = 1.0;
+
+// 		std::vector<solution> simplex;
+// 		simplex.resize(n + 1);
+// 		simplex[0].x = x0;
+// 		simplex[0].fit_fun(ff, ud1, ud2);
+// 		for (int i = 1; i < simplex.size(); ++i)
+// 		{
+// 			simplex[i].x = simplex[0].x + s * d[i - 1];
+// 			simplex[i].fit_fun(ff, ud1, ud2);
+// 		}
+// 		int i_min{};
+// 		int i_max{};
+
+// 		while (max(simplex, i_min) >= epsilon)
+// 		{
+// 			i_min = 0;
+// 			i_max = 0;
+// 			for (int i = 1; i < simplex.size(); ++i)
+// 			{
+// 				if (simplex[i].y < simplex[i_min].y)
+// 					i_min = i;
+// 				if (simplex[i].y > simplex[i_max].y)
+// 					i_max = i;
+// 			}
+
+// 			matrix simplex_CoG{};
+// 			for (int i = 0; i < simplex.size(); ++i)
+// 			{
+// 				if (i == i_max)
+// 					continue;
+// 				simplex_CoG = simplex_CoG + simplex[i].x;
+// 			}
+// 			simplex_CoG = simplex_CoG / simplex.size();
+// 			solution simplex_reflected{};
+// 			simplex_reflected.x = simplex_CoG + alpha * (simplex_CoG - simplex[i_max].x);
+// 			simplex_reflected.fit_fun(ff, ud1, ud2);
+
+// 			if (simplex_reflected.y < simplex[i_min].y)
+// 			{
+// 				solution simplex_expansion{};
+// 				simplex_expansion.x = simplex_CoG + gamma * (simplex_reflected.x - simplex_CoG);
+// 				simplex_expansion.fit_fun(ff, ud1, ud2);
+// 				if (simplex_expansion.y < simplex_reflected.y)
+// 					simplex[i_max] = simplex_expansion;
+// 				else
+// 					simplex[i_max] = simplex_reflected;
+// 			}
+// 			else
+// 			{
+// 				if (simplex[i_min].y <= simplex_reflected.y && simplex_reflected.y < simplex[i_max].y)
+// 					simplex[i_max] = simplex_reflected;
+// 				else
+// 				{
+// 					solution simplex_narrowed{};
+// 					simplex_narrowed.x = simplex_CoG + beta * (simplex[i_max].x - simplex_CoG);
+// 					simplex_narrowed.fit_fun(ff, ud1, ud2);
+// 					if (simplex_narrowed.y >= simplex[i_max].y)
+// 					{
+// 						for (int i = 0; i < simplex.size(); ++i)
+// 						{
+// 							if (i == i_min)
+// 								continue;
+// 							simplex[i].x = delta * (simplex[i].x + simplex[i_min].x);
+// 							simplex[i].fit_fun(ff, ud1, ud2);
+// 						}
+// 					}
+// 					else
+// 						simplex[i_max] = simplex_narrowed;
+// 				}
+// 			}
+
+// 			if (solution::f_calls > Nmax)
+// 			{
+// 				simplex[i_min].flag = 0;
+// 				throw std::string("Maximum amount of f_calls reached!");
+// 			}
+// 		}
+// 		return simplex[i_min];
+// 	}
+// 	catch (string ex_info)
+// 	{
+// 		throw ("solution sym_NM(...):\n" + ex_info);
+// 	}
+// }
+
+
+ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
 	{
