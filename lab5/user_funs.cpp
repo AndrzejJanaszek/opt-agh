@@ -361,3 +361,23 @@ matrix hf4T(matrix x, matrix ud1, matrix ud2){
 
 	return res;
 }
+
+// ud2 to wwektor phi
+matrix h_phi_4R(matrix x, matrix ud1, matrix ud2){
+	return 1/(1 + exp( m2d(-trans(ud2)*x) ));
+}
+
+// phi jest w x
+// w ud1 jest xi
+// w ud2 jest yi
+matrix ff_4R(matrix x, matrix ud1, matrix ud2){
+	int m = 100;
+	double sum = 0;
+	for(int i = 0; i < m; i++){
+		sum += ud2(i) * log(h_phi_4R(ud1(i),NULL,x)(0)) + (1 - ud2(i)) * log(1 - h_phi_4R(ud1(i),NULL,x)(0));
+	}
+	sum = -sum / (double)m;
+
+	matrix res = sum;
+	return res;
+}

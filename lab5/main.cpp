@@ -421,11 +421,21 @@ void lab4()
 
 	// solution res = SD(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
 	// solution res = CG(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
-	solution res = Newton(ff4T, gf4T, hf4T, x0, 0, epsilon, Nmax, NULL, NULL);
+	// solution res = Newton(ff4T, gf4T, hf4T, x0, 0, epsilon, Nmax, NULL, NULL);
 
-	printf("x1: %lf\n", res.x(0));
-	printf("x2: %lf\n", res.x(1));
-	printf("y: %lf\n", res.y(0));
+	// printf("x1: %lf\n", res.x(0));
+	// printf("x2: %lf\n", res.x(1));
+	// printf("y: %lf\n", res.y(0));
+	matrix x333(3,1);
+	x333(0) = 3;
+	x333(1) = 3;
+	x333(2) = 3;
+
+	matrix phi(3,1);
+	phi(0) = 1;
+	phi(1) = 1;
+	phi(2) = 1;
+	matrix dupa = h_phi_4R(x333,NULL,phi);
 }
 
 void lab5()
