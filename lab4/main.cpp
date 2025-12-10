@@ -303,7 +303,7 @@ void lab3()
 	
 	x0(0,0) = 1.1;
 	x0(1,0) = 1.1;
-	double s = 0.1;
+	double s = 0.25;
 	double alpha = 1;	// = 1
 	double beta = 0.5;	// < 1
 	double gamma = 2;	// > 1
@@ -321,7 +321,7 @@ void lab3()
 	std::mt19937 gen(rd());                     // generator Mersenne Twister
 	std::uniform_real_distribution<double> dist(0, 7); // równomierny rozkład
 
-	/* for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 100; i++){
 		// wygeneruj x0 w przedziale
 		bool warunek = false;
 		do{
@@ -358,25 +358,25 @@ void lab3()
 		printf("\n");
 
 	}
- */
+
 	
-	printf("x0_1 ");
-	printf("x0_2 ");
-	printf("sol_x1 ");
-	printf("sol_x2 ");
-	printf("\n");
+	// printf("x0_1 ");
+	// printf("x0_2 ");
+	// printf("sol_x1 ");
+	// printf("sol_x2 ");
+	// printf("\n");
 
-	x0(0,0) = 0;
-	x0(1,0) = 9.6;
-	// solution::clear_calls();
-	// solution real_solution = sym_NM(ff3R, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, NULL, c);
-	// printf("%d ", solution::f_calls);
-	// printf("%lf ", real_solution.x(0));
-	// printf("%lf ", real_solution.x(1));
-	// printf("%lf ", real_solution.y(0));
+	// x0(0,0) = 0;
+	// x0(1,0) = 9.6;
+	// // solution::clear_calls();
+	// // solution real_solution = sym_NM(ff3R, x0, s, alpha, beta, gamma, delta, epsilon, Nmax, NULL, c);
+	// // printf("%d ", solution::f_calls);
+	// // printf("%lf ", real_solution.x(0));
+	// // printf("%lf ", real_solution.x(1));
+	// // printf("%lf ", real_solution.y(0));
 
-	double wynik = ff3R(x0, NULL, c)(0);
-	printf("%lf ", wynik);
+	// double wynik = ff3R(x0, NULL, c)(0);
+	// printf("%lf ", wynik);
 
 	
 
