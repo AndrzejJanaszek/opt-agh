@@ -933,16 +933,90 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix), matrix x0, double h0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
-	{
-		solution Xopt;
-		//Tu wpisz kod funkcji
+    {
+        solution Xopt;
+        matrix x = x0;
+        matrix x_prev = x0;
+        int iter = 0;
+		double* przedzial;
 
-		return Xopt;
-	}
-	catch (string ex_info)
-	{
-		throw ("solution CG(...):\n" + ex_info);
-	}
+        while (true)
+        {
+            // Obliczenie gradientu
+            matrix g = gf(x, ud1, ud2);
+
+            // Kierunek najszybszego spadku
+            matrix d = -g;
+
+			
+			x_prev = x;
+			if(h0 == 0){
+				// if dynamiczne h
+				matrix mmm(2,2);
+				mmm[0] = x;
+				mmm[1] = d;
+				przedzial = expansion(ff, 0, 0.1, 1.1, Nmax, NULL, mmm);
+				double h = golden(ff, przedzial[0], przedzial[1], epsilon, Nmax, NULL, mmm).x(0);
+				delete przedzial;
+
+            	x = x + h * d;
+			}
+			else{
+				x = x + h0 * d;
+			}
+
+            // Podgląd trajektorii
+            printf("%lf %lf\n", x(0), x(1));
+
+            iter++;
+
+            // Warunek stopu: ||x(i) - x(i-1)|| < epsilon
+            if (norm(x - x_prev) < epsilon)
+                break;
+
+            if (iter >= Nmax)
+                throw("Przekroczono maksymalną liczbę iteracji w CG.");
+
+            // --- aktualizacja kierunku CG ---
+
+            // nowy gradient
+            matrix g_new = gf(x, ud1, ud2);
+
+            // beta = ||g_new||^2 / ||g||^2
+            double num = 0.0;
+            double den = 0.0;
+            for (int i = 0; i < g.m; ++i)
+            {
+                num += g_new(i) * g_new(i);
+                den += g(i)     * g(i);
+            }
+
+            if (den == 0.0)
+            {
+                // gradient = 0 → jesteśmy w stacjonarnym punkcie
+                g = g_new;
+                break;
+            }
+
+            double beta = num / den;
+
+            // nowy kierunek: d = -g_new + beta * d
+            d = -g_new + beta * d;
+
+            // zaktualizuj gradient
+            g = g_new;
+        }
+
+        // Zapis rozwiązania
+        Xopt.x = x;
+        Xopt.fit_fun(ff, ud1, ud2);
+
+        return Xopt;
+    }
+    catch (string ex_info)
+    {
+        throw("solution CG(...):\n" + ex_info);
+    }
 }
 
 solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, matrix),

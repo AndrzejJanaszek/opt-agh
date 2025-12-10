@@ -419,7 +419,8 @@ void lab4()
 
 	int Nmax = 10000;
 
-	solution res = SD(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
+	// solution res = SD(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
+	solution res = CG(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
 
 	printf("x1: %lf\n", res.x(0));
 	printf("x2: %lf\n", res.x(1));
