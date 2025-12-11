@@ -36,3 +36,5 @@ matrix hf4T(matrix x, matrix ud1, matrix ud2);
 
 matrix h_phi_4R(matrix x, matrix ud1, matrix ud2);
 matrix ff_4R(matrix x, matrix ud1, matrix ud2);
+matrix gf_4R(matrix x, matrix ud1, matrix ud2);
+matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2);

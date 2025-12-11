@@ -409,33 +409,127 @@ void lab3()
 
 void lab4()
 {
-	matrix x0(2,1);
-	x0(0) = -2;
-	x0(1) = 2;
+	// ###############################################
+	matrix x_data(3,100);
+	matrix y_data(1,100);
 
-	double h0 = 0.25;
+	bool y1[] = {1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1};
+	double x1[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+	double x2[] = {57, 86, 86, 71, 75, 84, 89, 68, 50, 90, 53, 40, 40, 28, 97, 35, 59, 29, 44, 54, 22, 53, 66, 26, 43, 70, 100, 64, 79, 48, 82, 44, 50, 95, 28, 37, 71, 26, 75, 35, 23, 87, 92, 37, 45, 42, 31, 47, 68, 76, 86, 60, 33, 56, 78, 51, 40, 36, 51, 46, 36, 38, 96, 97, 95, 54, 34, 94, 65, 97, 51, 37, 77, 31, 59, 35, 81, 83, 77, 21, 59, 52, 93, 65, 45, 78, 50, 91, 80, 93, 82, 98, 43, 38, 56, 46, 34, 52, 82, 74};
+	double x3[] = {68, 87, 46, 25, 77, 53, 93, 96, 34, 92, 87, 49, 68, 56, 88, 35, 80, 75, 30, 73, 77, 48, 42, 87, 67, 62, 96, 56, 82, 91, 79, 52, 45, 53, 45, 38, 81, 34, 54, 98, 49, 99, 76, 71, 74, 59, 45, 52, 66, 49, 51, 93, 70, 37, 25, 71, 99, 55, 38, 100, 49, 56, 46, 26, 21, 34, 87, 25, 27, 82, 98, 63, 93, 52, 60, 72, 42, 67, 75, 28, 82, 66, 90, 28, 85, 85, 62, 71, 36, 61, 37, 33, 57, 67, 26, 98, 86, 92, 100, 87};
+
+	for(int i = 0; i < 100; i++){
+		y_data(0, i) = y1[i];
+
+		x_data(0, i) = x1[i];
+		x_data(1, i) = x2[i];
+		x_data(2, i) = x3[i];
+	}
+	// ###############################################
 
 	double epsilon = 0.001;
+	int Nmax = 10000000;
 
-	int Nmax = 10000;
+	// ###############################################
 
-	// solution res = SD(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
-	// solution res = CG(ff4T, gf4T, x0, 0, epsilon, Nmax, NULL, NULL);
-	// solution res = Newton(ff4T, gf4T, hf4T, x0, 0, epsilon, Nmax, NULL, NULL);
+	matrix x0(2,1);
+	x0(0) = 1;
+	x0(1) = 1;
+
+
+	// ###############################################
+
+	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+	std::mt19937 gen(rd());                     // generator Mersenne Twister
+	std::uniform_real_distribution<double> dist(0, 7); // równomierny rozkład
+
+	// ########## KROK ###########
+	double h0 = 0.25;	
+	// ###########################
+
+	solution res;
+
+	/* for(int i = 0; i < 100; i++){
+		// wygeneruj x0 w przedziale
+		bool warunek = false;
+		do{
+			warunek = false;
+			x0(0) = dist(gen);
+			x0(1) = dist(gen);
+			
+			if(x0(0) > 2 || x0(0) < -2 || x0(1) > 2 || x0(1) < -2){
+				warunek = true;
+			}
+		}while(warunek);
+
+		// ###############[ mamy x1 i x2 ]###############
+		printf("%lf ", x0(0));		// x1
+		printf("%lf ", x0(1));		// x2
+
+		solution::clear_calls();
+		res = SD(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+		
+		printf("%lf ", res.x(0));				// x1
+		printf("%lf ", res.x(1));				// x2
+		printf("%lf ", res.y(0));				// y
+		printf("%d ", solution::f_calls);	
+		printf("%d ", solution::g_calls);
+		printf("tak/nie ");
+
+
+		solution::clear_calls();
+		res = CG(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+
+		printf("%lf ", res.x(0));				// x1
+		printf("%lf ", res.x(1));				// x2
+		printf("%lf ", res.y(0));				// y
+		printf("%d ", solution::f_calls);	
+		printf("%d ", solution::g_calls);
+		printf("tak/nie ");
+
+
+		solution::clear_calls();
+		res = Newton(ff4T, gf4T, hf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+		printf("%lf ", res.x(0));				// x1
+		printf("%lf ", res.x(1));				// x2
+		printf("%lf ", res.y(0));				// y
+		printf("%d ", solution::f_calls);	
+		printf("%d ", solution::g_calls);
+		printf("%d ", solution::H_calls);
+		printf("tak/nie ");
+
+		printf("\n");
+	}
+	 */
+	// ###############################################
+	// x0(0) = 2;
+	// x0(1) = 2;
+	// // res = SD(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+	// res = CG(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+	// res = Newton(ff4T, gf4T, hf4T, x0, h0, epsilon, Nmax, NULL, NULL);
 
 	// printf("x1: %lf\n", res.x(0));
 	// printf("x2: %lf\n", res.x(1));
 	// printf("y: %lf\n", res.y(0));
-	matrix x333(3,1);
-	x333(0) = 3;
-	x333(1) = 3;
-	x333(2) = 3;
+	// matrix x333(3,1);
+	// x333(0) = 3;
+	// x333(1) = 3;
+	// x333(2) = 3;
 
 	matrix phi(3,1);
-	phi(0) = 1;
-	phi(1) = 1;
-	phi(2) = 1;
-	matrix dupa = h_phi_4R(x333,NULL,phi);
+	phi(0) = 0;
+	phi(1) = 0;
+	phi(2) = 0;
+
+	solution::clear_calls();
+	res = CG(ff_4R, gf_4R, phi, 0.0001, epsilon, Nmax, x_data, y_data);
+
+	printf("%lf ", res.x(0));
+	printf("%lf ", res.x(1));
+	printf("%lf ", res.x(2));
+	printf("%lf ", res.y(0));
+	printf("%lf ", p_od_phi_4R(res.x, x_data, y_data)(0));
+	printf("%d ", solution::g_calls);
 }
 
 void lab5()

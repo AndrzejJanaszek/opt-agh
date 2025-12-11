@@ -882,12 +882,12 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
         while (true)
         {
             // Obliczenie gradientu
+			solution::g_calls += 1;
             matrix g = gf(x, ud1, ud2);
 
             // Kierunek najszybszego spadku
             matrix d = -g;
 
-			
 			x_prev = x;
 			if(h0 == 0){
 				// if dynamiczne h
@@ -905,7 +905,7 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			}
 
             // Wykonanie kroku stałej długości
-			printf("%lf %lf\n", x(0), x(1));
+			// printf("%lf %lf\n", x(0), x(1));
 			// printf("ud1: %lf\n", ud1(0));
             iter++;
 
@@ -939,18 +939,33 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
         matrix x_prev = x0;
         int iter = 0;
 		double* przedzial;
-
+		
+		// Obliczenie gradientu
+		// Kierunek najszybszego spadku
+		matrix d;
         while (true)
         {
-            // Obliczenie gradientu
-            matrix g = gf(x, ud1, ud2);
+			if(iter > 0){
+				solution::g_calls += 1;
+				double mianownik = pow(norm(-gf(x_prev, ud1, ud2)), 2);
+				if( fabs(mianownik) < 0.00001){
+					break;
+				}
 
-            // Kierunek najszybszego spadku
-            matrix d = -g;
+				solution::g_calls += 2;
+				double beta = pow(norm(-gf(x, ud1, ud2)), 2) / mianownik;
+				d = -gf(x, ud1, ud2) + beta * d;
+			}
+			else{
+				solution::g_calls += 1;
+				d = -gf(x, ud1, ud2);
+			}
+
+            // printf("\td: %lf %lf\n", d(0), d(1));
 			
 			x_prev = x;
 			if(h0 == 0){
-				// if dynamiczne h
+				// dla zmiennej długości kroku
 				matrix mmm(2,2);
 				mmm[0] = x;
 				mmm[1] = d;
@@ -964,8 +979,12 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 				x = x + h0 * d;
 			}
 
+			if(isnan(x(0)) || isnan(x(1))){
+				break;
+			}
+
             // Podgląd trajektorii
-            printf("%lf %lf\n", x(0), x(1));
+            // printf("%lf %lf\n", x(0), x(1));
 
             iter++;
 
@@ -976,34 +995,6 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
             if (iter >= Nmax)
                 throw("Przekroczono maksymalną liczbę iteracji w CG.");
 
-            // --- aktualizacja kierunku CG ---
-
-            // nowy gradient
-            matrix g_new = gf(x, ud1, ud2);
-
-            // beta = ||g_new||^2 / ||g||^2
-            double num = 0.0;
-            double den = 0.0;
-            for (int i = 0; i < g.m; ++i)
-            {
-                num += g_new(i) * g_new(i);
-                den += g(i)     * g(i);
-            }
-
-            if (den == 0.0)
-            {
-                // gradient = 0 → jesteśmy w stacjonarnym punkcie
-                g = g_new;
-                break;
-            }
-
-            double beta = num / den;
-
-            // nowy kierunek: d = -g_new + beta * d
-            d = -g_new + beta * d;
-
-            // zaktualizuj gradient
-            g = g_new;
         }
 
         // Zapis rozwiązania
@@ -1032,7 +1023,9 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
         while (true)
         {
             // Gradient i Hessian
+			solution::g_calls += 1;
             matrix g = gf(x, ud1, ud2);
+			solution::H_calls += 1;
             matrix H = Hf(x, ud1, ud2);
 
             // Kierunek: d = -H^{-1} * g
@@ -1055,7 +1048,7 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 				x = x + h0 * d;
 			}
 
-            printf("%lf %lf\n", x(0), x(1));
+            // printf("%lf %lf\n", x(0), x(1));
 
             iter++;
 

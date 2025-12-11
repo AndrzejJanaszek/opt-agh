@@ -367,17 +367,56 @@ matrix h_phi_4R(matrix x, matrix ud1, matrix ud2){
 	return 1/(1 + exp( m2d(-trans(ud2)*x) ));
 }
 
-// phi jest w x
-// w ud1 jest xi
-// w ud2 jest yi
+// w x : phi
+// w ud1 : xi
+// w ud2 : yi
 matrix ff_4R(matrix x, matrix ud1, matrix ud2){
 	int m = 100;
 	double sum = 0;
 	for(int i = 0; i < m; i++){
-		sum += ud2(i) * log(h_phi_4R(ud1(i),NULL,x)(0)) + (1 - ud2(i)) * log(1 - h_phi_4R(ud1(i),NULL,x)(0));
+		sum += ud2(0,i) * log( h_phi_4R(get_col(ud1, i),NULL,x)(0) ) + ( 1 - ud2(0,i) ) * log(1 - h_phi_4R(get_col(ud1, i),NULL,x)(0));
 	}
 	sum = -sum / (double)m;
 
 	matrix res = sum;
 	return res;
+}
+
+// w x : phi
+// w ud1 : xi
+// w ud2 : yi
+matrix gf_4R(matrix x, matrix ud1, matrix ud2){
+	matrix res(3,1);
+	res(0) = 0;
+	res(1) = 0;
+	res(2) = 0;
+
+	const int m = 100;
+	for(int i = 0; i < m; i++){
+		for(int j = 0; j < 3; j++){
+			res(j) += ( h_phi_4R(get_col(ud1, i), NULL, x)(0) - ud2(0,i) ) * ud1(j,i);
+		}
+	}
+	res(0) = res(0) / (double)m;
+	res(1) = res(1) / (double)m;
+	res(2) = res(2) / (double)m;
+
+	return res;
+}
+
+// x: phi
+// ud1: xi
+// ud2: yi
+matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2){
+	double res = 0;
+	for(int i = 0; i < 100; i++){
+		double tmp = ceil(h_phi_4R(get_col(ud1, i),NULL, x)(0));
+		if(tmp == ud2(0,i)){
+			res += 1;
+		}
+		//else res += 0;
+	}
+	res = res / 100.0;
+	matrix chuj = res;
+	return chuj;
 }
