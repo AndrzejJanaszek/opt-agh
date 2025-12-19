@@ -534,28 +534,83 @@ void lab4()
 
 void lab5()
 {
-	const double epsilon = 0.0001;
+	const double epsilon = 0.000001;
 	const int Nmax = 10000;
 	matrix x0(2,1);
 	matrix ud1(2,1);
+	solution res;
 	double a = 1;
 	double w = 0;
 
-	x0(0)=0;
-	x0(1)=0;
+	// x0(0)=0;
+	// x0(1)=0;
+	
+	// solution res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
+	
+	// printf("%lf", res.x(0));
+	
+	// matrix x(2,1);
+	// x(0) = 500;
+	// x(1) = 25;
+	// ud1(0) = NULL;
+	// ud1(1) = 0.5;
+	// ff5R_single(x,ud1,NULL);
+	
+	/* 
+	x0(0) = 7.3;
+	x0(1) = 1;
+
 	ud1(0) = a;
 	ud1(1) = w;
 
-	solution res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
+	res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
+ */
 
-	printf("%lf", res.x(0));
 
-	matrix x(2,1);
-	x(0) = 500;
-	x(1) = 25;
-	ud1(0) = NULL;
-	ud1(1) = 0.5;
-	ff5R_single(x,ud1,NULL);
+
+	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
+	std::mt19937 gen(rd());                     // generator Mersenne Twister
+	std::uniform_real_distribution<double> dist(-10, 10); // równomierny rozkład
+
+
+	for(double w = 0; w <= 1.01; w+=0.01){
+		// generowanie x0
+		bool warunek = false;
+		do{
+			warunek = false;
+			x0(0) = dist(gen);
+			x0(1) = dist(gen);
+			
+			if(x0(0) > 10 || x0(0) < -10 || x0(1) > 10 || x0(1) < -10){
+				warunek = true;
+			}
+		}while(warunek);
+
+		printf("%lf ",x0(0));	// x1
+		printf("%lf ",x0(1));	// x2
+
+		for(int a = 1; a <= 100; a *= 10){
+			ud1(0) = a;
+			ud1(1) = w;
+			solution::clear_calls();
+			res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
+
+			printf("%lf ",res.x(0));				// x1
+			printf("%lf ",res.x(1));				// x2
+			printf("%lf ",ff5T_1(res.x,a,NULL)(0));	// y1
+			printf("%lf ",ff5T_2(res.x,a,NULL)(0));	// y2
+			printf("%d ",solution::f_calls);		// fcalls
+
+		}
+
+		printf("\n");
+	}
+
+
+
+
+
+
 }
 
 void lab6()

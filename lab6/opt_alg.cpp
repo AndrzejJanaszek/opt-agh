@@ -1169,13 +1169,16 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 				matrix dj = get_col(d,j);
 
 				// ud2 = [x][d]
-				matrix mmm(2, n);
-				mmm[0] = x;
-				mmm[1] = dj;
+				matrix mmm(2, 2);
+				mmm.set_col(x,0);
+				mmm.set_col(dj,1);
+				// mmm[0] = x;
+				// mmm[1] = dj;
 
 				double* przedzial =
 					expansion(ff, 0.0, 0.1, 1.1, Nmax, ud1, mmm);
 
+				// printf("przedział: %lf %lf\n", przedzial[0], przedzial[1]);
 				double h =
 					golden(ff, przedzial[0], przedzial[1],
 					       epsilon, Nmax, ud1, mmm).x(0);
@@ -1183,6 +1186,10 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 				delete[] przedzial;
 
 				x = x + h * dj;
+
+				// printf("%lf ", x(0));
+				// printf("%lf ", x(1));
+				// printf("\n");
 			}
 
 			// --- warunek stopu ---
@@ -1204,9 +1211,9 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 			d.set_col(dn, n-1);
 
 			// --- dodatkowy krok w nowym kierunku ---
-			matrix mmm(2, n);
-			mmm[0] = x;
-			mmm[1] = dn;
+			matrix mmm(2, 2);
+			mmm.set_col(x,0);
+			mmm.set_col(dn,1);
 
 			double* przedzial =
 				expansion(ff, 0.0, 0.1, 1.1, Nmax, ud1, mmm);

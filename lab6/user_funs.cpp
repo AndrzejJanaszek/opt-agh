@@ -421,14 +421,17 @@ matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2){
 	return ret;
 }
 
-// ud1 = a
+// ud1(0) = a
 matrix ff5T_1(matrix x, matrix ud1, matrix ud2){
-	return ud1(0) * ( pow(x(0) - 3, 2) + pow(x(1) - 3, 2) );
+	matrix res = ud1(0) * ( pow(x(0) - 3, 2) + pow(x(1) - 3, 2) );
+	return res;
 }
 
-// ud1 = a
+// ud1(0) = a
 matrix ff5T_2(matrix x, matrix ud1, matrix ud2){
-	return (1.0/ud1(0)) * ( pow(x(0) + 3, 2) + pow(x(1) + 3, 2) );
+	// printf("x1: %lf x2: %lf a: %lf\n", x(0), x(1), ud1(0));
+	matrix res = (1.0/ud1(0)) * ( pow(x(0) + 3, 2) + pow(x(1) + 3, 2) );
+	return res;
 }
 
 // jeżeli dynamiczne h
@@ -436,9 +439,13 @@ matrix ff5T_2(matrix x, matrix ud1, matrix ud2){
 // ud2 => [x][d]
 matrix ff5T_single(matrix x, matrix ud1, matrix ud2){
 	if(ud2.m < 2){
-		return ud1(1) * ff5T_1(x,ud1,ud2) + (1 - ud1(1)) * ff5T_2(x,ud1,ud2);
+		matrix res = ud1(1) * ff5T_1(x,ud1,ud2) + (1 - ud1(1)) * ff5T_2(x,ud1,ud2);
+		return res;
 	}
-	return ff5T_single(ud2[0] + x*ud2[1], ud1, NULL);
+	// double chuj = get_col(ud2, 0)(0);
+	// printf("x1: %lf x2: %lf d1: %lf, d2: %lf \n", get_col(ud2, 0)(0), get_col(ud2, 0)(1), get_col(ud2, 1)(0), get_col(ud2, 1)(1));
+	matrix res = ff5T_single(get_col(ud2, 0) + x*get_col(ud2, 1), ud1, NULL);
+	return res;
 
 }
 
