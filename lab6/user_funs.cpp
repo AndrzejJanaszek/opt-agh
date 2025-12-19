@@ -435,10 +435,84 @@ matrix ff5T_2(matrix x, matrix ud1, matrix ud2){
 // ud1 => (a,w)
 // ud2 => [x][d]
 matrix ff5T_single(matrix x, matrix ud1, matrix ud2){
-	const double w = 0.5;
 	if(ud2.m < 2){
 		return ud1(1) * ff5T_1(x,ud1,ud2) + (1 - ud1(1)) * ff5T_2(x,ud1,ud2);
 	}
 	return ff5T_single(ud2[0] + x*ud2[1], ud1, NULL);
 
+}
+
+// x => (l,d)
+// zwraca masę
+matrix ff5R_1(matrix x, matrix ud1, matrix ud2){
+	const double ro = 8920.0; // kg/m3
+	double l = x(0) / 1000.0;
+	double d = x(1) / 1000.0;
+	return pow(0.5*d, 2)*M_PI * l * ro;
+
+}
+
+// x => (l,d)
+// zwraca ugiecie
+matrix ff5R_2(matrix x, matrix ud1, matrix ud2){
+	double l = x(0) / 1000.0;
+	double d = x(1) / 1000.0;
+	const double P = 2000; // 2kN
+	const double E = 12e9; // GPa
+	return 	(64 * P * pow( l ,3)) / 
+			( 3 * E * M_PI * pow(d, 4) );
+}
+// jeżeli dynamiczne h
+// x => (l,d)
+// ud1 => (NULL,w) -> NULL jako legacy
+// ud2 => [x][d]
+// !dane wejściowe w [mm]
+matrix ff5R_single(matrix x, matrix ud1, matrix ud2){
+	double const ALPHA = 1.2;
+	const double P = 2000; // 2kN
+
+	if(ud2.m < 2){
+		double l = x(0) / 1000.0;
+		double d = x(1) / 1000.0;
+		matrix u = ff5R_2(x,ud1,ud2);
+		matrix res = ud1(1) * ff5R_1(x,ud1,ud2) + 1000 * (1 - ud1(1)) * u;
+
+		double sigma = (32 * P * l) / (M_PI * pow(d,3));
+
+		printf("masa : %lf\n", ff5R_1(x,ud1,ud2)(0));
+		printf("u : %lf\n", u(0));
+		printf("sigma : %lf\n", sigma);
+		
+
+		const double umax = 2.5;
+		const double sigma_max = 300 * 1000 * 1000; // MPa
+		// l e [200, 1000]
+		if(l - 200 < 0){
+			res = res + ALPHA * pow(l - 200, 2);
+		}
+		if(l - 1000 > 0){
+			res = res + ALPHA * pow(l - 1000, 2);
+		}
+
+		// d e [10, 50]
+		if(d - 10 < 0){
+			res = res + ALPHA * pow(d - 10, 2);
+		}
+		if(d - 50 > 0){
+			res = res + ALPHA * pow(d - 50, 2);
+		}
+
+		// u
+		if(u - umax > 0){
+			res = res + ALPHA * pow(u - umax, 2);
+		}
+
+		//sigma
+		if(sigma - sigma_max > 0){
+			res = res + ALPHA * pow(sigma - sigma_max, 2);
+		}
+
+		return res;
+	}
+	return ff5T_single(ud2[0] + x*ud2[1], ud1, NULL);
 }

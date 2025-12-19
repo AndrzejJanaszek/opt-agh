@@ -549,6 +549,13 @@ void lab5()
 	solution res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
 
 	printf("%lf", res.x(0));
+
+	matrix x(2,1);
+	x(0) = 500;
+	x(1) = 25;
+	ud1(0) = NULL;
+	ud1(1) = 0.5;
+	ff5R_single(x,ud1,NULL);
 }
 
 void lab6()
