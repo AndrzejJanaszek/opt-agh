@@ -417,6 +417,6 @@ matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2){
 		//else res += 0;
 	}
 	res = res / 100.0;
-	matrix chuj = res;
-	return chuj;
+	matrix ret = res;
+	return ret;
 }

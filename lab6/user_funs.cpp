@@ -417,6 +417,16 @@ matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2){
 		//else res += 0;
 	}
 	res = res / 100.0;
-	matrix chuj = res;
-	return chuj;
+	matrix ret = res;
+	return ret;
+}
+
+// ud1 = a
+matrix ff5T_1(matrix x, matrix ud1, matrix ud2){
+	return ud1(0) * ( pow(x(0) - 3, 2) + pow(x(1) - 3, 2) );
+}
+
+// ud1 = a
+matrix ff5T_2(matrix x, matrix ud1, matrix ud2){
+	return (1.0/ud1(0)) * ( pow(x(0) + 3, 2) + pow(x(1) + 3, 2) );
 }
