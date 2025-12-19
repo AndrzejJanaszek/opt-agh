@@ -330,7 +330,7 @@ matrix ff3R(matrix x, matrix ud1, matrix ud2){
 }
 
 // jeżeli dynamiczne h - dla liniowej phi()
-// ud2 => 
+// ud2 => [x][d]
 matrix ff4T(matrix x, matrix ud1, matrix ud2){
 
 	if(ud2.m < 2){
@@ -429,4 +429,16 @@ matrix ff5T_1(matrix x, matrix ud1, matrix ud2){
 // ud1 = a
 matrix ff5T_2(matrix x, matrix ud1, matrix ud2){
 	return (1.0/ud1(0)) * ( pow(x(0) + 3, 2) + pow(x(1) + 3, 2) );
+}
+
+// jeżeli dynamiczne h
+// ud1 => (a,w)
+// ud2 => [x][d]
+matrix ff5T_single(matrix x, matrix ud1, matrix ud2){
+	const double w = 0.5;
+	if(ud2.m < 2){
+		return ud1(1) * ff5T_1(x,ud1,ud2) + (1 - ud1(1)) * ff5T_2(x,ud1,ud2);
+	}
+	return ff5T_single(ud2[0] + x*ud2[1], ud1, NULL);
+
 }

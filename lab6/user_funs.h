@@ -42,3 +42,4 @@ matrix p_od_phi_4R(matrix x, matrix ud1, matrix ud2);
 
 matrix ff5T_1(matrix x, matrix ud1, matrix ud2);
 matrix ff5T_2(matrix x, matrix ud1, matrix ud2);
+matrix ff5T_single(matrix x, matrix ud1, matrix ud2);

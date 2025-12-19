@@ -1071,54 +1071,6 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
     }
 }
 
-// std::vector<matrix> expansion(matrix(*ff)(matrix, matrix, matrix), matrix x0, matrix d, double alpha, int Nmax, matrix ud1, matrix ud2){
-// 	int i = 0;
-	
-// 	solution x1 = x0;
-// 	solution x2 = x0+d;
-// 	solution x3 = x0;
-	
-// 	x1.fit_fun(ff, ud1, ud2);
-// 	x2.fit_fun(ff, ud1, ud2);
-// 	if(x1.y == x2.y){
-// 		std::vector<matrix> res;
-// 		res.push_back(x1.x);
-// 		res.push_back(x2.x);
-// 		return res;
-// 	}
-// 	if(x2.y > x1.y){
-// 		// odwróc kierunek (-1)
-// 		d = -d;
-// 		// nowy punkt
-// 		x2 = x0+d;
-// 		x2.fit_fun(ff, ud1, ud2);
-
-// 		// jezeli x0 jest dołkiem
-// 		if(x2.y >= x1.y){
-// 			std::vector<matrix> res;
-// 			res.push_back(x2.x);
-// 			res.push_back(x1.x - d);
-// 			return res;
-// 		}
-// 	}
-
-// 	while(true){
-// 		i++;
-// 		x1.x = x2.x;
-// 		x2.x = x3.x;
-// 		x3.x = x1.x + d * pow(alpha, i);
-
-// 		x2.fit_fun(ff, ud1, ud2);
-// 		x3.fit_fun(ff, ud1, ud2);
-// 		if(x3.y > x2.y){
-// 			std::vector<matrix> res;
-// 			res.push_back(x1.x);
-// 			res.push_back(x3.x);
-// 			return res;
-// 		}
-// 	}
-// }
-
 solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
 	try
@@ -1193,13 +1145,86 @@ solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, 
 	try
 	{
 		solution Xopt;
-		//Tu wpisz kod funkcji
+		const int n = x0.n;
 
-		return Xopt;
+		matrix x = x0;
+		matrix x_prev(n,1);
+
+		// kierunki początkowe – macierz jednostkowa
+		// matrix d(n,n);
+		// for(int i=0;i<n;i++)
+		// 	for(int j=0;j<n;j++)
+		// 		d(i,j) = (i==j ? 1.0 : 0.0);
+
+		matrix d = ident_mat(n);
+
+		while(solution::f_calls < Nmax)
+		{
+			x_prev = x;
+			matrix p0 = x;
+
+			// --- kroki po kolejnych kierunkach ---
+			for(int j=0;j<n;j++)
+			{
+				matrix dj = get_col(d,j);
+
+				// ud2 = [x][d]
+				matrix mmm(2, n);
+				mmm[0] = x;
+				mmm[1] = dj;
+
+				double* przedzial =
+					expansion(ff, 0.0, 0.1, 1.1, Nmax, ud1, mmm);
+
+				double h =
+					golden(ff, przedzial[0], przedzial[1],
+					       epsilon, Nmax, ud1, mmm).x(0);
+
+				delete[] przedzial;
+
+				x = x + h * dj;
+			}
+
+			// --- warunek stopu ---
+			if( norm(x - x_prev) < epsilon )
+			{
+				Xopt.x = x;
+				Xopt.fit_fun(ff, ud1, ud2);
+				// Xopt.y = ff(x, ud1, ud2);
+				return Xopt;
+			}
+
+			// --- aktualizacja kierunków ---
+			for(int j=0;j<n-1;j++)
+				// d.col(j) = d.col(j+1);
+				d.set_col( get_col(d,j+1), j);
+
+			matrix dn = x - p0;
+			// d.col(n-1) = dn;
+			d.set_col(dn, n-1);
+
+			// --- dodatkowy krok w nowym kierunku ---
+			matrix mmm(2, n);
+			mmm[0] = x;
+			mmm[1] = dn;
+
+			double* przedzial =
+				expansion(ff, 0.0, 0.1, 1.1, Nmax, ud1, mmm);
+
+			double h =
+				golden(ff, przedzial[0], przedzial[1],
+				       epsilon, Nmax, ud1, mmm).x(0);
+
+			delete[] przedzial;
+
+			x = x + h * dn;
+		}
+
+		throw string("przekroczono Nmax");
 	}
-	catch (string ex_info)
+	catch(string ex_info)
 	{
-		throw ("solution Powell(...):\n" + ex_info);
+		throw("solution Powell(...):\n" + ex_info);
 	}
 }
 

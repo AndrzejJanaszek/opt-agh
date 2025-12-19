@@ -29,7 +29,7 @@ int main()
 	try
 	{
 		// lab0();
-		lab4();
+		lab5();
 	}
 	catch (string EX_INFO)
 	{
@@ -534,7 +534,21 @@ void lab4()
 
 void lab5()
 {
+	const double epsilon = 0.0001;
+	const int Nmax = 10000;
+	matrix x0(2,1);
+	matrix ud1(2,1);
+	double a = 1;
+	double w = 0;
 
+	x0(0)=0;
+	x0(1)=0;
+	ud1(0) = a;
+	ud1(1) = w;
+
+	solution res = Powell(ff5T_single, x0, epsilon, Nmax, ud1, NULL);
+
+	printf("%lf", res.x(0));
 }
 
 void lab6()
