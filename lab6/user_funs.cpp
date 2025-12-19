@@ -450,17 +450,16 @@ matrix ff5T_single(matrix x, matrix ud1, matrix ud2){
 }
 
 // x => (l,d)
-// zwraca masę
+// zwraca masę kg
 matrix ff5R_1(matrix x, matrix ud1, matrix ud2){
 	const double ro = 8920.0; // kg/m3
 	double l = x(0) / 1000.0;
 	double d = x(1) / 1000.0;
 	return pow(0.5*d, 2)*M_PI * l * ro;
-
 }
 
 // x => (l,d)
-// zwraca ugiecie
+// zwraca ugiecie m
 matrix ff5R_2(matrix x, matrix ud1, matrix ud2){
 	double l = x(0) / 1000.0;
 	double d = x(1) / 1000.0;
@@ -475,38 +474,34 @@ matrix ff5R_2(matrix x, matrix ud1, matrix ud2){
 // ud2 => [x][d]
 // !dane wejściowe w [mm]
 matrix ff5R_single(matrix x, matrix ud1, matrix ud2){
-	double const ALPHA = 1.2;
+	double const ALPHA = 1.1;
 	const double P = 2000; // 2kN
 
 	if(ud2.m < 2){
 		double l = x(0) / 1000.0;
 		double d = x(1) / 1000.0;
-		matrix u = ff5R_2(x,ud1,ud2);
+		matrix u = ff5R_2(x,ud1,ud2)*1000;
+
 		matrix res = ud1(1) * ff5R_1(x,ud1,ud2) + 1000 * (1 - ud1(1)) * u;
 
 		double sigma = (32 * P * l) / (M_PI * pow(d,3));
 
-		printf("masa : %lf\n", ff5R_1(x,ud1,ud2)(0));
-		printf("u : %lf\n", u(0));
-		printf("sigma : %lf\n", sigma);
-		
-
 		const double umax = 2.5;
-		const double sigma_max = 300 * 1000 * 1000; // MPa
+		const double sigma_max = 300e6; // bo MPa
 		// l e [200, 1000]
-		if(l - 200 < 0){
-			res = res + ALPHA * pow(l - 200, 2);
+		if(x(0) - 200 < 0){
+			res = res + ALPHA * pow(x(0) - 200, 2);
 		}
-		if(l - 1000 > 0){
-			res = res + ALPHA * pow(l - 1000, 2);
+		if(x(0) - 1000 > 0){
+			res = res + ALPHA * pow(x(0) - 1000, 2);
 		}
 
 		// d e [10, 50]
-		if(d - 10 < 0){
-			res = res + ALPHA * pow(d - 10, 2);
+		if(x(1) - 10 < 0){
+			res = res + ALPHA * pow(x(1) - 10, 2);
 		}
-		if(d - 50 > 0){
-			res = res + ALPHA * pow(d - 50, 2);
+		if(x(1) - 50 > 0){
+			res = res + ALPHA * pow(x(1) - 50, 2);
 		}
 
 		// u
@@ -521,5 +516,9 @@ matrix ff5R_single(matrix x, matrix ud1, matrix ud2){
 
 		return res;
 	}
-	return ff5T_single(ud2[0] + x*ud2[1], ud1, NULL);
+
+	// double chuj = get_col(ud2, 0)(0);
+	// printf("x1: %lf x2: %lf d1: %lf, d2: %lf \n", get_col(ud2, 0)(0), get_col(ud2, 0)(1), get_col(ud2, 1)(0), get_col(ud2, 1)(1));
+	matrix res = ff5R_single(get_col(ud2, 0) + x*get_col(ud2,1), ud1, NULL);
+	return res;
 }

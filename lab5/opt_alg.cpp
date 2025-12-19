@@ -892,8 +892,8 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			if(h0 == 0){
 				// if dynamiczne h
 				matrix mmm(2,2);
-				mmm[0] = x;
-				mmm[1] = d;
+				mmm.set_col(x,0);
+				mmm.set_col(d,1);
 				przedzial = expansion(ff, 0, 0.1, 1.1, Nmax, NULL, mmm);
 				double h = golden(ff, przedzial[0], przedzial[1], epsilon, Nmax, NULL, mmm).x(0);
 				delete przedzial;
@@ -905,7 +905,7 @@ solution SD(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			}
 
             // Wykonanie kroku stałej długości
-			// printf("%lf %lf\n", x(0), x(1));
+			printf("%lf %lf\n", x(0), x(1));
 			// printf("ud1: %lf\n", ud1(0));
             iter++;
 
@@ -967,11 +967,11 @@ solution CG(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix, mat
 			if(h0 == 0){
 				// dla zmiennej długości kroku
 				matrix mmm(2,2);
-				mmm[0] = x;
-				mmm[1] = d;
+				mmm.set_col(x,0);
+				mmm.set_col(d,1);
 				przedzial = expansion(ff, 0, 0.1, 1.1, Nmax, NULL, mmm);
 				double h = golden(ff, przedzial[0], przedzial[1], epsilon, Nmax, NULL, mmm).x(0);
-				delete przedzial;
+				delete[] przedzial;
 
             	x = x + h * d;
 			}
@@ -1036,8 +1036,8 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 			if(h0 == 0){
 				// if dynamiczne h
 				matrix mmm(2,2);
-				mmm[0] = x;
-				mmm[1] = d;
+				mmm.set_col(x,0);
+				mmm.set_col(d,1);
 				przedzial = expansion(ff, 0, 0.1, 1.1, Nmax, NULL, mmm);
 				double h = golden(ff, przedzial[0], przedzial[1], epsilon, Nmax, NULL, mmm).x(0);
 				delete przedzial;
@@ -1048,7 +1048,8 @@ solution Newton(matrix(*ff)(matrix, matrix, matrix), matrix(*gf)(matrix, matrix,
 				x = x + h0 * d;
 			}
 
-            // printf("%lf %lf\n", x(0), x(1));
+			// trajektoria
+            printf("%lf %lf\n", x(0), x(1));
 
             iter++;
 

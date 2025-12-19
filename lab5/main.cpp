@@ -427,8 +427,8 @@ void lab4()
 	}
 	// ###############################################
 
-	double epsilon = 0.0001;
-	int Nmax = 10000000;
+	double epsilon = 0.001;
+	int Nmax = 100000;
 
 	// ###############################################
 
@@ -444,12 +444,12 @@ void lab4()
 	std::uniform_real_distribution<double> dist(0, 7); // równomierny rozkład
 
 	// ########## KROK ###########
-	double h0 = 0.25;	
+	double h0 = 0.001;	
 	// ###########################
 
 	solution res;
-
-	/* for(int i = 0; i < 100; i++){
+/* 
+	for(int i = 0; i < 100; i++){
 		// wygeneruj x0 w przedziale
 		bool warunek = false;
 		do{
@@ -467,14 +467,26 @@ void lab4()
 		printf("%lf ", x0(1));		// x2
 
 		solution::clear_calls();
-		res = SD(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
-		
-		printf("%lf ", res.x(0));				// x1
-		printf("%lf ", res.x(1));				// x2
-		printf("%lf ", res.y(0));				// y
-		printf("%d ", solution::f_calls);	
-		printf("%d ", solution::g_calls);
-		printf("tak/nie ");
+		try
+		{
+			res = SD(ff4T, gf4T, x0, h0, epsilon, Nmax, NULL, NULL);
+			printf("%lf ", res.x(0));				// x1
+			printf("%lf ", res.x(1));				// x2
+			printf("%lf ", res.y(0));				// y
+			printf("%d ", solution::f_calls);	
+			printf("%d ", solution::g_calls);
+			printf("tak/nie ");
+		}
+		catch(char const* e)
+		{
+			printf("Nmax ");				// x1
+			printf("Nmax ");				// x1
+			printf("Nmax ");				// x1
+			printf("Nmax ");				// x1
+			printf("Nmax ");				// x1
+			printf("Nmax ");				// x1
+		}
+				
 
 
 		solution::clear_calls();
@@ -501,6 +513,7 @@ void lab4()
 		printf("\n");
 	}
 	 */
+	
 	// ###############################################
 	// x0(0) = 2;
 	// x0(1) = 2;
@@ -511,10 +524,10 @@ void lab4()
 	// printf("x1: %lf\n", res.x(0));
 	// printf("x2: %lf\n", res.x(1));
 	// printf("y: %lf\n", res.y(0));
-	// matrix x333(3,1);
-	// x333(0) = 3;
-	// x333(1) = 3;
-	// x333(2) = 3;
+	matrix x333(3,1);
+	x333(0) = 3;
+	x333(1) = 3;
+	x333(2) = 3;
 
 	matrix phi(3,1);
 	phi(0) = 0;

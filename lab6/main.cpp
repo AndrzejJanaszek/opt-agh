@@ -534,7 +534,7 @@ void lab4()
 
 void lab5()
 {
-	const double epsilon = 0.000001;
+	const double epsilon = 0.00001;
 	const int Nmax = 10000;
 	matrix x0(2,1);
 	matrix ud1(2,1);
@@ -568,12 +568,14 @@ void lab5()
 
 
 
-	std::random_device rd;                      // ziarno (sprzętowe, jeśli dostępne)
-	std::mt19937 gen(rd());                     // generator Mersenne Twister
-	std::uniform_real_distribution<double> dist(-10, 10); // równomierny rozkład
+	std::random_device rd;
+	std::mt19937 gen(rd());
+
+	std::uniform_real_distribution<double> dist_l(200.0, 1000.0); // l
+	std::uniform_real_distribution<double> dist_d(10.0, 50.0);    // d
 
 
-	for(double w = 0; w <= 1.01; w+=0.01){
+	/* for(double w = 0; w <= 1.01; w+=0.01){
 		// generowanie x0
 		bool warunek = false;
 		do{
@@ -604,11 +606,50 @@ void lab5()
 		}
 
 		printf("\n");
+	} */
+
+
+
+
+	for(double w = 0; w <= 1.01; w+=0.01){
+		// generowanie x0
+		bool warunek = false;
+		do{
+			warunek = false;
+			x0(0) = dist_l(gen);
+			x0(1) = dist_d(gen);
+			
+			if(x0(0) > 1000 || x0(0) < 200|| x0(1) > 50 || x0(1) < 10){
+				warunek = true;
+			}
+		}while(warunek);
+
+		printf("%lf ", x0(0));	// x1
+		printf("%lf ", x0(1));	// x2
+
+		ud1(0) = 0;
+		ud1(1) = w;
+		solution::clear_calls();
+		res = Powell(ff5R_single, x0, epsilon, Nmax, ud1, NULL);
+
+		const double P = 2000; // 2kN
+		double l = res.x(0)/1000;
+		double d = res.x(1)/1000;
+		
+		double sigma = (32 * P * l) / (M_PI * pow(d,3));
+		sigma = sigma / 1000000;
+
+		printf("%lf ",res.x(0));				// x1
+		printf("%lf ",res.x(1));				// x2
+		printf("%lf ",ff5R_1(res.x,a,NULL)(0));	// masa
+		printf("%lf ",ff5R_2(res.x,a,NULL)(0) * 1000);	// ugiecie
+		printf("%lf ",sigma);					// naprezenie
+		printf("%d ",solution::f_calls);		// fcalls
+
+
+
+		printf("\n");
 	}
-
-
-
-
 
 
 }

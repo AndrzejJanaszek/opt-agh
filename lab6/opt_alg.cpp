@@ -1142,6 +1142,7 @@ solution golden(matrix(*ff)(matrix, matrix, matrix), double a, double b, double 
 
 solution Powell(matrix(*ff)(matrix, matrix, matrix), matrix x0, double epsilon, int Nmax, matrix ud1, matrix ud2)
 {
+	// printf("\nx1: %lf x2: %lf w: %lf\n", x0(0), x0(1), ud1(1));
 	try
 	{
 		solution Xopt;
