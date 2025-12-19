@@ -427,7 +427,7 @@ void lab4()
 	}
 	// ###############################################
 
-	double epsilon = 0.001;
+	double epsilon = 0.0001;
 	int Nmax = 10000000;
 
 	// ###############################################
@@ -522,7 +522,7 @@ void lab4()
 	phi(2) = 0;
 
 	solution::clear_calls();
-	res = CG(ff_4R, gf_4R, phi, 0.0001, epsilon, Nmax, x_data, y_data);
+	res = CG(ff_4R, gf_4R, phi, 0.01, epsilon, Nmax, x_data, y_data);
 
 	printf("%lf ", res.x(0));
 	printf("%lf ", res.x(1));
